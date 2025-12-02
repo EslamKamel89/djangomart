@@ -11,3 +11,15 @@ class Category(models.Model):
         return f"{self.name.capitalize()}"
     class Meta :
         verbose_name_plural = 'categories'
+
+class Product(models.Model):
+    title = models.CharField(max_length=255)
+    brand = models.CharField(max_length=255 , default='un-branded')
+    description = models.TextField(blank=True , null=True)
+    slug = models.SlugField(max_length=255 , unique=True)
+    price = models.DecimalField(max_digits=8 , decimal_places=2 )
+    image = models.ImageField(upload_to='images/')
+
+    def __str__(self) -> str:
+        return f"{self.title} - (${self.price})"
+
