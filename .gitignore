@@ -1,2 +1,6 @@
 *.sqlite3
 venv/*
+frontend/dist/*
+frontend/node_modules/*
+/frontend/.cache
+staticfiles/*
