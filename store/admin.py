@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.db.models.query import QuerySet
+from django.http import HttpRequest
+from django.utils.html import format_html
 
 from store.models import Category, Product
 
@@ -18,7 +21,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "slug", "brand", "price", "image")
+    list_display = ("id", "title", "slug", "brand", "price", "image_thumbnail")
     list_display_links = ("title", "slug")
     list_editable = ("brand",)
     list_filter = ("brand",)
@@ -26,3 +29,23 @@ class ProductAdmin(admin.ModelAdmin):
     ordering = ("-created_at",)
     prepopulated_fields = {"slug": ("title",)}
     list_per_page = 20
+    readonly_fields = ("image_thumbnail",)
+    actions = ("make_price_zero",)
+
+    fieldsets = (
+        (None, {"fields": ("title", "slug")}),
+        ("Information", {"fields": ("price", "description")}),
+    )
+
+    def image_thumbnail(self, obj: Product):
+        if not obj.image:
+            return "no image"
+        return format_html(
+            '<img src="{}" style="height:40px; width:40px; object-fit:cover; border-radius:6px; display:block;"/>',
+            obj.image.url,
+        )
+
+    @admin.action(description="Update the prices to zero")
+    def make_price_zero(self, request: HttpRequest, queryset: QuerySet):
+        updated = queryset.update(price=0)
+        self.message_user(request, f"{updated} product(s) updated.")
