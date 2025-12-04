@@ -6,11 +6,8 @@
 {% block content %}
 
 <div class="mt-10" x-data="{show:false}">
-  <button
-    type="button"
-    class="text-black bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
-    @click="show = !show"
-  >
+  <div class="text-red-500">hello</div>
+  <button type="button" class="bg-red-500 text-white" @click="show = !show">
     Toggle
   </button>
   <div x-show="show">hello</div>
