@@ -18,4 +18,11 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("id", "title", "slug", "brand", "price", "image")
+    list_display_links = ("title", "slug")
+    list_editable = ("brand",)
+    list_filter = ("brand",)
+    search_fields = ("title", "slug", "brand")
+    ordering = ("-created_at",)
+    prepopulated_fields = {"slug": ("title",)}
+    list_per_page = 20
