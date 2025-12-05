@@ -1,27 +1,181 @@
-<header class="text-gray-600 body-font">
-  <div
-    class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center"
-  >
-    <a
-      class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0"
-    >
-      <i class="bi bi-terminal text-5xl"></i>
-      <span class="ml-3 text-xl">DjangoMart</span>
-    </a>
-    <nav
-      class="md:ml-auto flex flex-wrap items-center text-base justify-center"
-    >
-      <a class="mr-5 hover:text-gray-900">First Link</a>
-      <a class="mr-5 hover:text-gray-900">Second Link</a>
-      <a class="mr-5 hover:text-gray-900">Third Link</a>
-      <a class="mr-5 hover:text-gray-900">Fourth Link</a>
-    </nav>
-    <button
-      class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0"
-      jf-ext-button-ct="button"
-    >
-      Button
-      <i class="bi bi-arrow-right ms-1"></i>
-    </button>
+{# templates/partials/navbar.html #}
+<header class="bg-white shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Brand -->
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-3">
+          <i
+            class="bi bi-terminal text-3xl text-primary"
+            aria-hidden="true"
+          ></i>
+          <span class="text-xl font-semibold text-neutral-900">DjangoMart</span>
+        </a>
+      </div>
+
+      <!-- Desktop nav -->
+      <nav
+        class="hidden md:flex items-center space-x-4"
+        aria-label="Main navigation"
+      >
+        <!-- Categories -->
+        <div x-data="{ open: false }" class="relative">
+          <button
+            @click="open = !open"
+            @keydown.escape="open = false"
+            class="inline-flex items-center gap-2 px-3 py-2 rounded-md hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+            :aria-expanded="open.toString()"
+            aria-haspopup="true"
+          >
+            <span class="text-sm font-medium">Categories</span>
+            <i class="bi bi-chevron-down text-sm"></i>
+          </button>
+
+          <div
+            x-show="open"
+            x-transition
+            @click.outside="open = false"
+            x-cloak
+            class="absolute mt-2 w-48 bg-white border rounded-md shadow-lg py-1 z-30"
+          >
+            <a href="/" class="block px-4 py-2 text-sm hover:bg-neutral-50"
+              >Electronics</a
+            >
+            <a href="/" class="block px-4 py-2 text-sm hover:bg-neutral-50"
+              >Fashion</a
+            >
+            <a href="/" class="block px-4 py-2 text-sm hover:bg-neutral-50"
+              >Home</a
+            >
+            <a
+              href="/"
+              class="block px-4 py-2 text-sm text-primary hover:bg-neutral-50"
+              >See all</a
+            >
+          </div>
+        </div>
+
+        <a href="/" class="px-3 py-2 rounded-md text-sm hover:bg-neutral-50"
+          >Link</a
+        >
+        <a href="/" class="px-3 py-2 rounded-md text-sm hover:bg-neutral-50"
+          >Link</a
+        >
+      </nav>
+
+      <!-- Right side: auth + mobile -->
+      <div class="flex items-center gap-3">
+        {% if user.is_authenticated %}
+        <!-- Logout (POST) -->
+        <form method="post" action="/" class="hidden sm:inline-block">
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-primary bg-white text-primary hover:bg-primary hover:text-white transition"
+          >
+            Logout
+            <i class="bi bi-box-arrow-right"></i>
+          </button>
+        </form>
+
+        <!-- Profile (desktop) -->
+        <a
+          href="/"
+          class="hidden md:inline-flex items-center gap-2 px-3 py-2 rounded-md hover:bg-neutral-50"
+        >
+          <div
+            class="h-8 w-8 rounded-full bg-neutral-200 flex items-center justify-center text-sm text-neutral-700"
+          >
+            {{ user.first_name|default:user.username|slice:":1"|upper }}
+          </div>
+          <span class="text-sm text-neutral-900">{{ user.username }}</span>
+        </a>
+        {% else %}
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-transparent bg-primary text-white hover:brightness-95 transition"
+        >
+          Login
+          <i class="bi bi-arrow-right"></i>
+        </a>
+        {% endif %}
+
+        <!-- Mobile menu -->
+        <div x-data="{ open: false }" class="md:hidden relative">
+          <button
+            @click="open = !open"
+            class="p-2 rounded-md hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <span class="sr-only">Open menu</span>
+            <template x-if="!open"><i class="bi bi-list text-lg"></i></template>
+            <template x-if="open"><i class="bi bi-x-lg text-lg"></i></template>
+          </button>
+
+          <div
+            x-show="open"
+            x-cloak
+            x-transition
+            class="absolute right-0 mt-2 w-64 bg-white border rounded-md shadow-lg py-3 z-40"
+          >
+            <nav class="flex flex-col px-3 space-y-1">
+              <div x-data="{ catOpen: false }" class="w-full">
+                <button
+                  @click="catOpen = !catOpen"
+                  class="w-full text-left px-2 py-2 rounded-md hover:bg-neutral-50 flex items-center justify-between"
+                >
+                  Categories
+                  <i class="bi bi-chevron-down"></i>
+                </button>
+                <div x-show="catOpen" x-cloak class="mt-1 pl-2">
+                  <a
+                    href="/"
+                    class="block px-2 py-1 text-sm hover:bg-neutral-50 rounded"
+                    >Electronics</a
+                  >
+                  <a
+                    href="/"
+                    class="block px-2 py-1 text-sm hover:bg-neutral-50 rounded"
+                    >Fashion</a
+                  >
+                  <a
+                    href="/"
+                    class="block px-2 py-1 text-sm hover:bg-neutral-50 rounded"
+                    >Home</a
+                  >
+                  <a
+                    href="/"
+                    class="block px-2 py-1 text-sm hover:bg-neutral-50 rounded text-primary"
+                    >See all</a
+                  >
+                </div>
+              </div>
+
+              <a href="/" class="px-2 py-2 rounded-md hover:bg-neutral-50"
+                >Link</a
+              >
+              <a href="/" class="px-2 py-2 rounded-md hover:bg-neutral-50"
+                >Link</a
+              >
+
+              {% if user.is_authenticated %}
+              <form method="post" action="/" class="px-2">
+                {% csrf_token %}
+                <button
+                  type="submit"
+                  class="w-full text-left px-2 py-2 rounded-md hover:bg-neutral-50"
+                >
+                  Logout
+                </button>
+              </form>
+              {% else %}
+              <a href="/" class="px-2 py-2 rounded-md hover:bg-neutral-50"
+                >Login</a
+              >
+              {% endif %}
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </header>
