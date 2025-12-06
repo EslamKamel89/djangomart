@@ -41,7 +41,7 @@ class ProductAdmin(admin.ModelAdmin):
     actions = ("make_price_zero",)
 
     fieldsets = (
-        (None, {"fields": ("title", "slug", "category")}),
+        (None, {"fields": ("title", "slug", "category", "image")}),
         ("Information", {"fields": ("price", "description")}),
     )
 
