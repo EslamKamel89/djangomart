@@ -21,7 +21,15 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "slug", "brand", "price", "image_thumbnail")
+    list_display = (
+        "id",
+        "title",
+        "category",
+        "slug",
+        "brand",
+        "price",
+        "image_thumbnail",
+    )
     list_display_links = ("title", "slug")
     list_editable = ("brand",)
     list_filter = ("brand",)
@@ -33,7 +41,7 @@ class ProductAdmin(admin.ModelAdmin):
     actions = ("make_price_zero",)
 
     fieldsets = (
-        (None, {"fields": ("title", "slug")}),
+        (None, {"fields": ("title", "slug", "category")}),
         ("Information", {"fields": ("price", "description")}),
     )
 
