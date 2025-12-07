@@ -1,0 +1,30 @@
+<a href="{% url 'product-view' product.slug %}">
+  <li
+    class="bg-white border border-neutral rounded-lg shadow-sm hover:shadow-md transition overflow-hidden cursor-pointer"
+  >
+    <!-- Product Image -->
+    <div class="w-full aspect-[4/3] bg-neutral-100 overflow-hidden">
+      <img
+        src="{{ product.image.url }}"
+        alt="{{ product.title }}"
+        class="w-full h-full object-cover"
+      />
+    </div>
+
+    <!-- Card Content -->
+    <div class="p-5">
+      <h3 class="text-lg font-semibold text-neutral-900">
+        {{ product.title | capfirst }}
+      </h3>
+
+      <p class="text-sm text-muted mt-1">{{ product.brand }}</p>
+
+      <div class="flex items-center justify-between mt-4">
+        <span class="text-primary font-semibold"> ${{ product.price }} </span>
+        <span class="text-sm px-3 py-1 bg-neutral text-neutral-700 rounded-md">
+          {{ product.category.name }}
+        </span>
+      </div>
+    </div>
+  </li>
+</a>
