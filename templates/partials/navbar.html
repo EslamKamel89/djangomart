@@ -38,20 +38,11 @@
             x-cloak
             class="absolute mt-2 w-48 bg-white border rounded-md shadow-lg py-1 z-30"
           >
+            {% for category in categories %}
             <a href="/" class="block px-4 py-2 text-sm hover:bg-neutral-50"
-              >Electronics</a
+              >{{ category.name }}</a
             >
-            <a href="/" class="block px-4 py-2 text-sm hover:bg-neutral-50"
-              >Fashion</a
-            >
-            <a href="/" class="block px-4 py-2 text-sm hover:bg-neutral-50"
-              >Home</a
-            >
-            <a
-              href="/"
-              class="block px-4 py-2 text-sm text-primary hover:bg-neutral-50"
-              >See all</a
-            >
+            {% endfor %}
           </div>
         </div>
 
