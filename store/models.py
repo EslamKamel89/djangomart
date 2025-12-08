@@ -11,6 +11,9 @@ class Category(models.Model):
     def __str__(self) -> str:
         return f"{self.name.capitalize()}"
 
+    def get_absolute_url(self):
+        return reverse("category-view", args=[self.slug])
+
     class Meta:
         verbose_name_plural = "categories"
 

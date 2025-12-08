@@ -1,5 +1,6 @@
 from typing import Any
 
+from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView, TemplateView, View
@@ -30,3 +31,11 @@ class ProductView(DetailView):
         data["related_products"] = Product.objects.filter(category=product.category)[2:]
         print(data["related_products"])
         return data
+
+
+class CategoryView(DetailView):
+    template_name = "store/category-details.html"
+    model = Category
+
+    def get_queryset(self) -> QuerySet[Any]:
+        return Category.objects.prefetch_related("products")
