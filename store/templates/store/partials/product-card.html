@@ -1,4 +1,4 @@
-<a href="{% url 'product-view' product.slug %}">
+<a href="{{ product.get_absolute_url }}">
   <li
     class="bg-white border border-neutral rounded-lg shadow-sm hover:shadow-md transition overflow-hidden cursor-pointer"
   >
