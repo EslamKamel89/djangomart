@@ -1,0 +1,28 @@
+<nav class="hidden md:flex items-center space-x-4" aria-label="Main navigation">
+  <div x-data="{ open: false }" class="relative">
+    <button
+      @click="open = !open"
+      @keydown.escape="open = false"
+      class="inline-flex items-center gap-2 px-3 py-2 rounded-md hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+      :aria-expanded="open.toString()"
+      aria-haspopup="true"
+    >
+      <span class="text-sm font-medium">Categories</span>
+      <i class="bi bi-chevron-down text-sm"></i>
+    </button>
+
+    <div
+      x-show="open"
+      x-transition
+      @click.outside="open = false"
+      x-cloak
+      class="absolute mt-2 w-48 bg-white border rounded-md shadow-lg py-1 z-30"
+    >
+      {% include "partials/categories-dropdown.html" %}
+    </div>
+  </div>
+
+  <!-- Other links -->
+  <a href="/" class="px-3 py-2 rounded-md text-sm hover:bg-neutral-50">Link</a>
+  <a href="/" class="px-3 py-2 rounded-md text-sm hover:bg-neutral-50">Link</a>
+</nav>

@@ -1,0 +1,52 @@
+<div x-data="{ open: false }" class="md:hidden relative">
+  <button
+    @click="open = !open"
+    class="p-2 rounded-md hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-primary"
+  >
+    <span class="sr-only">Open menu</span>
+    <template x-if="!open"><i class="bi bi-list text-lg"></i></template>
+    <template x-if="open"><i class="bi bi-x-lg text-lg"></i></template>
+  </button>
+
+  <div
+    x-show="open"
+    x-cloak
+    x-transition
+    class="absolute right-0 mt-2 w-64 bg-white border rounded-md shadow-lg py-3 z-40"
+  >
+    <nav class="flex flex-col px-3 space-y-1">
+      <div x-data="{ catOpen: false }" class="w-full">
+        <button
+          @click="catOpen = !catOpen"
+          class="w-full text-left px-2 py-2 rounded-md hover:bg-neutral-50 flex items-center justify-between"
+        >
+          Categories
+          <i class="bi bi-chevron-down"></i>
+        </button>
+
+        <div x-show="catOpen" x-cloak class="mt-1 pl-2">
+          {% include "partials/categories-dropdown.html" %}
+        </div>
+      </div>
+
+      <a href="/" class="px-2 py-2 rounded-md hover:bg-neutral-50">Link</a>
+      <a href="/" class="px-2 py-2 rounded-md hover:bg-neutral-50">Link</a>
+
+      {% if user.is_authenticated %}
+      <form method="post" action="/" class="px-2">
+        {% csrf_token %}
+        <button
+          type="submit"
+          class="w-full text-left px-2 py-2 rounded-md hover:bg-neutral-50"
+        >
+          Logout
+        </button>
+      </form>
+      {% else %}
+      <a href="/" class="px-2 py-2 rounded-md hover:bg-neutral-50">Login</a>
+      {% endif %}
+
+      <div class="px-2 mt-2">{% include "partials/cart-icon.html" %}</div>
+    </nav>
+  </div>
+</div>

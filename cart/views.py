@@ -8,7 +8,7 @@ from django.views.generic import DetailView, ListView, TemplateView, View
 
 class CartShowCreateView(View):
     def get(self, request: HttpRequest):
-        pass
+        return render(request, "cart/cart-summary.html")
 
     def post(self, request: HttpRequest):
         pass

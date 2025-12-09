@@ -1,0 +1,14 @@
+<a
+  href="{% url 'cart-show-create' %}"
+  class="relative inline-flex items-center justify-center text-neutral-700 hover:text-primary text-xl transition"
+>
+  <i class="bi bi-cart4"></i>
+
+  {% if cart_count|default:0 > 0 %}
+  <span
+    class="absolute -top-2 -right-2 bg-primary text-white text-xs font-semibold px-1.5 py-0.5 rounded-full"
+  >
+    {{ cart_count }}
+  </span>
+  {% endif %}
+</a>
