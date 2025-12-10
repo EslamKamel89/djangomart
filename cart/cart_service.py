@@ -3,7 +3,7 @@ from typing import Any
 from django.http import HttpRequest
 
 
-class Cart:
+class CartService:
     def __init__(self, request: HttpRequest) -> None:
         self.session = request.session
         cart = self.session.get("cart")
@@ -11,9 +11,9 @@ class Cart:
             self.session["cart"] = {}
 
     @property
-    def cart(self):
-        return self.session.get("cart")
+    def cart(self) -> dict[str, Any]:
+        return self.session.get("cart", {})
 
     @cart.setter
-    def cart(self, new_cart: Any):
+    def cart(self, new_cart: dict[str, Any]):
         self.session["cart"] = new_cart
