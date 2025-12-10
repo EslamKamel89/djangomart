@@ -1,8 +1,8 @@
 from django.http import HttpRequest
 
+from cart.cart_service import CartService
+
 
 def get_cart(request: HttpRequest):
-    from cart.cart_service import CartService
-
     service = CartService(request)
-    return service.cart
+    return {"cart": service.cart}

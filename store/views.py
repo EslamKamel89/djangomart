@@ -8,10 +8,6 @@ from django.views.generic import DetailView, ListView, TemplateView, View
 from store.models import Category, Product
 
 
-def categories(request: HttpRequest):
-    return {"categories": Category.objects.all()}
-
-
 class HomeView(View):
     def get(self, request: HttpRequest):
         products = Product.objects.select_related("category").all()
