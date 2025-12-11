@@ -7,13 +7,10 @@
 <div class="max-w-6xl mx-auto px-4 py-12">
   <h1 class="text-2xl font-semibold text-neutral-900 mb-6">Shopping cart</h1>
 
-  <!-- Cart list -->
   <div
     class="bg-white border border-neutral rounded-lg shadow-sm overflow-hidden"
   >
-    <!-- Single cart item (repeat this block for each product) -->
     <div class="grid grid-cols-12 gap-4 items-start p-4 md:p-6">
-      <!-- Image column -->
       <div class="col-span-12 md:col-span-2">
         <div
           class="w-full h-36 md:h-full bg-neutral-100 rounded-lg overflow-hidden"
@@ -26,7 +23,6 @@
         </div>
       </div>
 
-      <!-- Details column -->
       <div class="col-span-12 md:col-span-8">
         <div
           class="border border-transparent md:border-l md:border-r md:border-neutral rounded-md p-4 md:p-6"
@@ -49,7 +45,6 @@
           <div
             class="mt-4 md:mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 items-center"
           >
-            <!-- quantity area -->
             <div class="flex items-center gap-3">
               <label for="qty" class="text-sm text-neutral-700">Qty</label>
               <select
@@ -64,7 +59,6 @@
               </select>
             </div>
 
-            <!-- actions -->
             <div class="flex items-center gap-3 md:justify-center">
               <button
                 class="px-4 py-2 rounded-md bg-primary text-white font-medium shadow-sm hover:brightness-95 transition"
@@ -78,7 +72,6 @@
               </button>
             </div>
 
-            <!-- price (mobile placed under actions) -->
             <div class="flex items-center md:justify-end">
               <span class="text-lg font-semibold text-neutral-900">$99.00</span>
             </div>
@@ -86,7 +79,6 @@
         </div>
       </div>
 
-      <!-- Price column (desktop only; mobile shown above) -->
       <div
         class="hidden md:flex col-span-12 md:col-span-2 md:items-center md:justify-end"
       >
@@ -96,10 +88,8 @@
         </div>
       </div>
     </div>
-    <!-- end single cart item -->
   </div>
 
-  <!-- Cart summary -->
   <div
     class="mt-8 flex flex-col md:flex-row md:items-center md:justify-end gap-4"
   >
@@ -129,4 +119,5 @@
     </div>
   </div>
 </div>
+<script></script>
 {% endblock %}
