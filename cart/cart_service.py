@@ -12,6 +12,7 @@ class CartService:
         cart = self.session.get("cart")
         if not cart:
             self.session["cart"] = {}
+            self.session.modified = True
 
     @property
     def cart(self) -> dict[str, Any]:
@@ -20,12 +21,13 @@ class CartService:
     @cart.setter
     def cart(self, new_cart: dict[str, Any]):
         self.session["cart"] = new_cart
+        self.session.modified = True
 
     def add(self, *, product: Product, count: int):
-        id, title, price = str(product.id), product.title, product.price  # type: ignore
+        id, title, price = str(product.id), product.title, float(product.price)  # type: ignore
         cart = self.cart.copy()
         if id in cart:
-            cart[id]["count"] += 1
+            cart[id]["count"] += count
         else:
             cart[id] = {"title": title, "price": price, "count": count}
         self.cart = cart
