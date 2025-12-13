@@ -3,6 +3,8 @@ from typing import Any
 
 from django.http import HttpRequest
 
+from store.models import Product
+
 
 class CartService:
     def __init__(self, request: HttpRequest) -> None:
@@ -19,5 +21,11 @@ class CartService:
     def cart(self, new_cart: dict[str, Any]):
         self.session["cart"] = new_cart
 
-    def add(self, *, product_id: int, count: int, title: str, price: Decimal):
-        pass
+    def add(self, *, product: Product, count: int):
+        id, title, price = str(product.id), product.title, product.price  # type: ignore
+        cart = self.cart.copy()
+        if id in cart:
+            cart[id]["count"] += 1
+        else:
+            cart[id] = {"title": title, "price": price, "count": count}
+        self.cart = cart

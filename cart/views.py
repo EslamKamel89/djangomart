@@ -29,10 +29,7 @@ class CartShowCreateView(View):
             )
         product = get_object_or_404(Product, pk=product_id)
         cart_service = CartService(request)
-        cart_service.add(
-            product_id=product_id, count=count, title=product.title, price=product.price
-        )
-
+        cart_service.add(product=product, count=count)
         return JsonResponse({"cart": cart_service.cart})
 
 
