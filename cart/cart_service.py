@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import Any
 
 from django.http import HttpRequest
@@ -17,3 +18,6 @@ class CartService:
     @cart.setter
     def cart(self, new_cart: dict[str, Any]):
         self.session["cart"] = new_cart
+
+    def add(self, *, product_id: int, count: int, title: str, price: Decimal):
+        pass

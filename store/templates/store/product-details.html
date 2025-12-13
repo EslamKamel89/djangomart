@@ -141,7 +141,10 @@
           this.loading = true;
           this.errors = {};
           this.serverMessage = "";
-          const res = await api.post("/cart/");
+          const res = await api.post("/cart/", {
+            product_id: "{{ product.id }}",
+            count: this.count,
+          });
           console.log(res);
           this.serverMessage = res.data.message;
           try {
