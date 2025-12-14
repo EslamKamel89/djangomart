@@ -130,19 +130,28 @@
       {% endfor %}
     </ul>
   </section>
+  {{ cart|json_script:"cart_data" }}
   <script>
     function app() {
+      cartData = JSON.parse(document.getElementById("cart_data").textContent);
+      productId = "{{ product.id }}";
+      console.log(cartData);
       return {
         count: "1",
         errors: {},
         loading: false,
         serverMessage: "",
+        init() {
+          if (cartData[productId]) {
+            this.count = cartData[productId].count;
+          }
+        },
         async submit() {
           this.loading = true;
           this.errors = {};
           this.serverMessage = "";
           const res = await api.post("/cart/", {
-            product_id: "{{ product.id }}",
+            product_id: productId,
             count: this.count,
           });
           console.log(res);
