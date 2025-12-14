@@ -24,7 +24,14 @@ class CartService:
         self.session.modified = True
 
     def add(self, *, product: Product, count: int, increment: bool = False):
-        id, title, price = str(product.id), product.title, float(product.price)  # type: ignore
+        id, title, price, image, brand, category = (
+            str(product.id),  # type: ignore
+            product.title,
+            float(product.price),
+            product.image.url,
+            product.brand,
+            product.category.name if product.category else None,
+        )
         cart = self.cart.copy()
         if id in cart:
             if increment:
@@ -32,5 +39,12 @@ class CartService:
             else:
                 cart[id]["count"] = count
         else:
-            cart[id] = {"title": title, "price": price, "count": count}
+            cart[id] = {
+                "title": title,
+                "price": price,
+                "count": count,
+                "image": image,
+                "brand": brand,
+                "category": category,
+            }
         self.cart = cart

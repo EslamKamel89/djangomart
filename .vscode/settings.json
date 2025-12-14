@@ -27,6 +27,8 @@
     "files.associations": {
         "**/templates/**/*.html": "django-html"
     },
+    "django.enableJsAndCssSupport": true,
+    "debug.javascript.unmapMissingSources": true,
     "emmet.includeLanguages": {
         "django-html": "html"
     },

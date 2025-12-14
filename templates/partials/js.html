@@ -3,6 +3,7 @@
   src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.2/dist/cdn.min.js"
 ></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+{% csrf_token %}
 <script>
   function getCookie(name) {
     let cookieValue = null;
@@ -28,4 +29,8 @@
     withCredentials: true,
   });
   api.defaults.headers.common["X-CSRFToken"] = csrftoken;
+  function pr(value, title) {
+    console.log(`<<<${title ?? ""}>>>`, value, "");
+    return value;
+  }
 </script>

@@ -135,7 +135,6 @@
     function app() {
       cartData = JSON.parse(document.getElementById("cart_data").textContent);
       productId = "{{ product.id }}";
-      console.log(cartData);
       return {
         count: "1",
         errors: {},
@@ -154,7 +153,7 @@
             product_id: productId,
             count: this.count,
           });
-          console.log(res);
+          pr(res);
           this.serverMessage = res.data.message;
           try {
           } catch (error) {
