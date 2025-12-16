@@ -4,91 +4,105 @@
 {% block title %} Shopping cart {% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-12">
+<div class="max-w-6xl mx-auto px-4 py-12" x-data="cartSummary()">
   <h1 class="text-2xl font-semibold text-neutral-900 mb-6">Shopping cart</h1>
-
-  <div
-    class="bg-white border border-neutral rounded-lg shadow-sm overflow-hidden"
-  >
-    <div class="grid grid-cols-12 gap-4 items-start p-4 md:p-6">
-      <div class="col-span-12 md:col-span-2">
-        <div
-          class="w-full h-36 md:h-full bg-neutral-100 rounded-lg overflow-hidden"
-        >
-          <img
-            src="/static/images/product-placeholder.jpg"
-            alt="Product image"
-            class="w-full h-full object-cover"
-          />
-        </div>
-      </div>
-
-      <div class="col-span-12 md:col-span-8">
-        <div
-          class="border border-transparent md:border-l md:border-r md:border-neutral rounded-md p-4 md:p-6"
-        >
+  <template x-for="(product , id) in cartData" :key="id">
+    <div
+      class="bg-white border border-neutral rounded-lg shadow-sm overflow-hidden my-3"
+    >
+      <div class="grid grid-cols-12 gap-4 items-start p-4 md:p-6">
+        <div class="col-span-12 md:col-span-2">
           <div
-            class="flex flex-col md:flex-row md:items-start md:justify-between gap-3"
+            class="w-full h-36 md:h-full bg-neutral-100 rounded-lg overflow-hidden"
           >
-            <div>
-              <h2 class="text-lg md:text-xl font-semibold text-neutral-900">
-                Example Product Title
-              </h2>
-              <p class="text-sm text-muted mt-1">Brand Name</p>
-            </div>
-
-            <div class="hidden md:flex items-center gap-3">
-              <span class="text-sm text-muted">Category</span>
-            </div>
-          </div>
-
-          <div
-            class="mt-4 md:mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 items-center"
-          >
-            <div class="flex items-center gap-3">
-              <label for="qty" class="text-sm text-neutral-700">Qty</label>
-              <select
-                id="qty"
-                name="qty"
-                class="w-20 px-2 py-2 border border-neutral rounded-md text-sm"
-              >
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-              </select>
-            </div>
-
-            <div class="flex items-center gap-3 md:justify-center">
-              <button
-                class="px-4 py-2 rounded-md bg-primary text-white font-medium shadow-sm hover:brightness-95 transition"
-              >
-                Update
-              </button>
-              <button
-                class="px-4 py-2 rounded-md bg-[color:var(--accent-500)] text-white font-medium shadow-sm hover:brightness-95 transition"
-              >
-                Delete
-              </button>
-            </div>
-
-            <div class="flex items-center md:justify-end">
-              <span class="text-lg font-semibold text-neutral-900">$99.00</span>
-            </div>
+            <img
+              :src="product.image"
+              :alt="product.title"
+              class="w-full h-full object-cover"
+            />
           </div>
         </div>
-      </div>
 
-      <div
-        class="hidden md:flex col-span-12 md:col-span-2 md:items-center md:justify-end"
-      >
-        <div class="text-right">
-          <div class="text-sm text-muted">Price</div>
-          <div class="mt-2 text-xl font-semibold text-neutral-900">$99.00</div>
+        <div class="col-span-12 md:col-span-8">
+          <div
+            class="border border-transparent md:border-l md:border-r md:border-neutral rounded-md p-4 md:p-6"
+          >
+            <div
+              class="flex flex-col md:flex-row md:items-start md:justify-between gap-3"
+            >
+              <div>
+                <h2
+                  class="text-lg md:text-xl font-semibold text-neutral-900"
+                  x-text="product.title"
+                ></h2>
+                <p class="text-sm text-muted mt-1" x-text="product.brand"></p>
+              </div>
+
+              <div class="hidden md:flex items-center gap-3">
+                <span
+                  class="text-sm text-muted"
+                  x-text="product.category"
+                ></span>
+              </div>
+            </div>
+
+            <div
+              class="mt-4 md:mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 items-center"
+            >
+              <div class="flex items-center gap-3">
+                <label
+                  for="quantity-input"
+                  class="text-sm font-medium text-neutral-700"
+                >
+                  Qty
+                </label>
+                <input
+                  id="quantity-input"
+                  type="number"
+                  value="1"
+                  x-model="product.count"
+                  min="1"
+                  class="w-20 px-3 py-2 border border-neutral rounded-md text-center text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
+              <div class="flex items-center gap-3 md:justify-center">
+                <button
+                  class="px-4 py-2 rounded-md bg-primary text-white font-medium shadow-sm hover:brightness-95 transition"
+                >
+                  Update
+                </button>
+                <button
+                  class="px-4 py-2 rounded-md bg-[color:var(--accent-500)] text-white font-medium shadow-sm hover:brightness-95 transition"
+                >
+                  Delete
+                </button>
+              </div>
+
+              <div class="flex items-center md:justify-end">
+                <span class="text-lg font-semibold text-neutral-900"
+                  >$<span
+                    x-text="(product.price * product.count).toLocaleString(2)"
+                  ></span
+                ></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="hidden md:flex col-span-12 md:col-span-2 md:items-center md:justify-end"
+        >
+          <div class="text-right">
+            <div class="text-sm text-muted">Price</div>
+            <div class="mt-2 text-xl font-semibold text-neutral-900">
+              $<span x-text="product.price.toLocaleString(2)"></span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </template>
 
   <div
     class="mt-8 flex flex-col md:flex-row md:items-center md:justify-end gap-4"
@@ -98,7 +112,9 @@
     >
       <div class="flex items-center justify-between">
         <span class="text-sm text-neutral-700">Sub total:</span>
-        <span class="text-lg font-semibold text-neutral-900">$99.00</span>
+        <span class="text-lg font-semibold text-neutral-900">
+          $<span x-text="total().toLocaleString(2)"></span>
+        </span>
       </div>
 
       <div class="mt-4 flex items-center justify-between">
@@ -119,5 +135,22 @@
     </div>
   </div>
 </div>
-<script></script>
+{{ cart|json_script:"cart_data" }}
+<script>
+  function cartSummary() {
+    cartData = JSON.parse(document.getElementById("cart_data").textContent);
+    pr(cartData, "cartData");
+    return {
+      cartData,
+      total() {
+        const products = Object.values(this.cartData);
+        return products.reduce(
+          (sum, product) => sum + product.price * product.count,
+          0
+        );
+      },
+      init() {},
+    };
+  }
+</script>
 {% endblock %}
