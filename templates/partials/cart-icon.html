@@ -1,14 +1,28 @@
 <a
+  x-data="cartIcon()"
   href="{% url 'cart-show-create' %}"
   class="relative inline-flex items-center justify-center text-neutral-700 hover:text-primary text-xl transition"
 >
   <i class="bi bi-cart4"></i>
 
-  {% if cart_count|default:0 > 0 %}
   <span
+    x-show="total"
+    x-text="total"
     class="absolute -top-2 -right-2 bg-primary text-white text-xs font-semibold px-1.5 py-0.5 rounded-full"
   >
-    {{ cart_count }}
   </span>
-  {% endif %}
 </a>
+{{ cart|json_script:"cart_data" }}
+<script>
+  function cartIcon() {
+    cartData = JSON.parse(document.getElementById("cart_data").textContent);
+    return {
+      total: 0,
+      cartData,
+      init() {
+        const products = Object.values(this.cartData);
+        this.total = products.reduce((sum, product) => sum + product.count, 0);
+      },
+    };
+  }
+</script>
