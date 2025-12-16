@@ -29,13 +29,20 @@ class CartShowCreateView(View):
             )
         product = get_object_or_404(Product, pk=product_id)
         cart_service = CartService(request)
-        cart_service.add(product=product, count=count)
+        cart_service.sync(product=product, count=count)
         return JsonResponse({"cart": cart_service.cart})
 
 
-class CartUpdateDeleteView(View):
-    def put(self, request: HttpRequest, id: int):
-        pass
-
+class CartDeleteView(View):
     def delete(self, request: HttpRequest, id: int):
-        pass
+        try:
+            body: dict[str, Any] = json.loads(request.body.decode())
+        except Exception as e:
+            return JsonResponse({"error": "invalid json"}, status=400)
+        product_id = body.get("product_id")
+        product_id = int(product_id) if product_id else None
+        if not product_id:
+            return JsonResponse({"error": "product_id is required"})
+        cart_service = CartService(request)
+        cart_service.delete(product_id)
+        return JsonResponse({"cart": cart_service.cart})

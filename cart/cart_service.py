@@ -23,7 +23,7 @@ class CartService:
         self.session["cart"] = new_cart
         self.session.modified = True
 
-    def add(self, *, product: Product, count: int, increment: bool = False):
+    def sync(self, *, product: Product, count: int, increment: bool = False):
         id, title, price, image, brand, category = (
             str(product.id),  # type: ignore
             product.title,
@@ -48,3 +48,9 @@ class CartService:
                 "category": category,
             }
         self.cart = cart
+
+    def delete(self, product_id: int):
+        cart = self.cart.copy()
+        if product_id in cart:
+            del cart[str(product_id)]
+            self.cart = cart
