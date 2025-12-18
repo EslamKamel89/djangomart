@@ -1,13 +1,14 @@
 <a
   x-data="cartIcon()"
+  @cart-data-updated.window="cartData = $event.detail"
   href="{% url 'cart-show-create' %}"
   class="relative inline-flex items-center justify-center text-neutral-700 hover:text-primary text-xl transition"
 >
   <i class="bi bi-cart4"></i>
 
   <span
-    x-show="total"
-    x-text="total"
+    x-show="total()"
+    x-text="total()"
     class="absolute -top-2 -right-2 bg-primary text-white text-xs font-semibold px-1.5 py-0.5 rounded-full"
   >
   </span>
@@ -15,13 +16,15 @@
 {{ cart|json_script:"cart_data" }}
 <script>
   function cartIcon() {
-    cartData = JSON.parse(document.getElementById("cart_data").textContent);
+    const cartData = JSON.parse(
+      document.getElementById("cart_data").textContent
+    );
     return {
-      total: 0,
       cartData,
-      init() {
+      total() {
         const products = Object.values(this.cartData);
-        this.total = products.reduce((sum, product) => sum + product.count, 0);
+        if (!products.length) return false;
+        return products.reduce((sum, product) => sum + product.count, 0);
       },
     };
   }

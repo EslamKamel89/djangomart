@@ -133,17 +133,24 @@
   {{ cart|json_script:"cart_data" }}
   <script>
     function productDetails() {
-      cartData = JSON.parse(document.getElementById("cart_data").textContent);
+      const cartData = JSON.parse(
+        document.getElementById("cart_data").textContent
+      );
       productId = "{{ product.id }}";
       return {
+        cartData,
         count: "1",
         errors: {},
         loading: false,
         serverMessage: "",
         init() {
-          if (cartData[productId]) {
-            this.count = cartData[productId].count;
+          if (this.cartData[productId]) {
+            this.count = this.cartData[productId].count;
           }
+          this.$watch("count", (c) => {
+            this.cartData[productId].count = c;
+            this.$dispatch("cart-data-updated", this.cartData);
+          });
         },
         async submit() {
           this.loading = true;

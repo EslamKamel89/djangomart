@@ -138,7 +138,9 @@
 {{ cart|json_script:"cart_data" }}
 <script>
   function cartSummary() {
-    cartData = JSON.parse(document.getElementById("cart_data").textContent);
+    const cartData = JSON.parse(
+      document.getElementById("cart_data").textContent
+    );
     pr(cartData, "cartData");
     return {
       cartData,
@@ -149,7 +151,11 @@
           0
         );
       },
-      init() {},
+      init() {
+        this.$watch("cartData", (cart) => {
+          this.$dispatch("cart-data-updated", cart);
+        });
+      },
     };
   }
 </script>
