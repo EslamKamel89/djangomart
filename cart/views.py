@@ -35,14 +35,7 @@ class CartShowCreateView(View):
 
 class CartDeleteView(View):
     def delete(self, request: HttpRequest, id: int):
-        try:
-            body: dict[str, Any] = json.loads(request.body.decode())
-        except Exception as e:
-            return JsonResponse({"error": "invalid json"}, status=400)
-        product_id = body.get("product_id")
-        product_id = int(product_id) if product_id else None
-        if not product_id:
-            return JsonResponse({"error": "product_id is required"})
+        get_object_or_404(Product, pk=id)
         cart_service = CartService(request)
-        cart_service.delete(product_id)
+        cart_service.delete(id)
         return JsonResponse({"cart": cart_service.cart})

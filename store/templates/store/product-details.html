@@ -156,14 +156,15 @@
           this.loading = true;
           this.errors = {};
           this.serverMessage = "";
-          const res = await api.post("/cart/", {
-            product_id: productId,
-            count: this.count,
-          });
-          pr(res);
-          this.serverMessage = res.data.message;
           try {
+            const res = await api.post(`/cart/`, {
+              product_id: productId,
+              count: this.count,
+            });
+            pr(res);
+            this.serverMessage = res.data.message;
           } catch (error) {
+            pr(error, "product-details-error");
           } finally {
             this.loading = false;
           }

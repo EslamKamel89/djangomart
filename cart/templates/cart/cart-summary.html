@@ -8,6 +8,7 @@
   <h1 class="text-2xl font-semibold text-neutral-900 mb-6">Shopping cart</h1>
   <template x-for="(product , id) in cartData" :key="id">
     <div
+      x-data="productDetails(cartData , product , id )"
       class="bg-white border border-neutral rounded-lg shadow-sm overflow-hidden my-3"
     >
       <div class="grid grid-cols-12 gap-4 items-start p-4 md:p-6">
@@ -54,7 +55,7 @@
                   for="quantity-input"
                   class="text-sm font-medium text-neutral-700"
                 >
-                  Qty
+                  Qty <span x-text="product.count"></span>
                 </label>
                 <input
                   id="quantity-input"
@@ -68,12 +69,15 @@
 
               <div class="flex items-center gap-3 md:justify-center">
                 <button
-                  class="px-4 py-2 rounded-md bg-primary text-white font-medium shadow-sm hover:brightness-95 transition"
+                  class="px-4 py-2 rounded-md bg-primary text-white font-medium shadow-sm hover:brightness-95 transition disabled:opacity-50"
+                  @click="update()"
+                  :disabled="loading"
                 >
-                  Update
+                  <span x-text="loading ? 'Loading' : 'Update' "></span>
                 </button>
                 <button
                   class="px-4 py-2 rounded-md bg-[color:var(--accent-500)] text-white font-medium shadow-sm hover:brightness-95 transition"
+                  @click="deleteProduct()"
                 >
                   Delete
                 </button>
@@ -155,6 +159,49 @@
         this.$watch("cartData", (cart) => {
           this.$dispatch("cart-data-updated", cart);
         });
+      },
+      update(productId, count) {},
+      delete(productId) {},
+    };
+  }
+  function productDetails(cartData, product, id) {
+    return {
+      loading: false,
+      errors: {},
+      serverMessage: "",
+      async update() {
+        this.loading = true;
+        this.errors = {};
+        this.serverMessage = "";
+        try {
+          const res = await api.post("/cart/", {
+            product_id: id,
+            count: product.count,
+          });
+          pr(res);
+          this.serverMessage = res.data.message;
+        } catch (error) {
+          pr(error, "product-cart-update-error");
+        } finally {
+          this.loading = false;
+        }
+      },
+      async deleteProduct() {
+        delete cartData[id];
+        this.loading = true;
+        this.errors = {};
+        this.serverMessage = "";
+        try {
+          const res = await api.delete(`/cart/${id}`, {
+            product_id: id,
+          });
+          pr(res);
+          this.serverMessage = res.data.message;
+        } catch (error) {
+          pr(error, "product-cart-delete-error");
+        } finally {
+          this.loading = false;
+        }
       },
     };
   }

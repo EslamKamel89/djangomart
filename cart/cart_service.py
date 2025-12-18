@@ -50,7 +50,9 @@ class CartService:
         self.cart = cart
 
     def delete(self, product_id: int):
+        id = str(product_id)
         cart = self.cart.copy()
-        if product_id in cart:
-            del cart[str(product_id)]
+        if id in cart:
+            del cart[id]
             self.cart = cart
+            print(cart)
