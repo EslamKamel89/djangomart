@@ -24,7 +24,10 @@
       total() {
         const products = Object.values(this.cartData);
         if (!products.length) return false;
-        return products.reduce((sum, product) => sum + product.count, 0);
+        return products.reduce(
+          (sum, product) => sum + Number(product.count),
+          0
+        );
       },
     };
   }
