@@ -4,11 +4,16 @@
 {% block title %} Shopping cart {% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-12" x-data="cartSummary()">
+<div
+  class="max-w-6xl mx-auto px-4 py-12"
+  x-data="cartSummary()"
+  @cart:update.window="updateItem($event.detail.id , $event.detail.count)"
+  @cart:remove.window="removeItem($event.detail.id)"
+>
   <h1 class="text-2xl font-semibold text-neutral-900 mb-6">Shopping cart</h1>
   <template x-for="(product , id) in cartData" :key="id">
     <div
-      x-data="productDetails(cartData , product , id )"
+      x-data="productDetails( product , id )"
       class="bg-white border border-neutral rounded-lg shadow-sm overflow-hidden my-3"
     >
       <div class="grid grid-cols-12 gap-4 items-start p-4 md:p-6">
@@ -160,11 +165,15 @@
           this.$dispatch("cart-data-updated", cart);
         });
       },
-      update(productId, count) {},
-      delete(productId) {},
+      updateItem(productId, count) {
+        this.cartData[String(productId)].count = count;
+      },
+      removeItem(productId) {
+        delete this.cartData[String(productId)];
+      },
     };
   }
-  function productDetails(cartData, product, id) {
+  function productDetails(product, id) {
     return {
       loading: false,
       errors: {},
@@ -180,6 +189,10 @@
           });
           pr(res);
           this.serverMessage = res.data.message;
+          this.$dispatch("cart:update", {
+            id: id,
+            count: product.count,
+          });
         } catch (error) {
           pr(error, "product-cart-update-error");
         } finally {
@@ -187,16 +200,14 @@
         }
       },
       async deleteProduct() {
-        delete cartData[id];
         this.loading = true;
         this.errors = {};
         this.serverMessage = "";
         try {
-          const res = await api.delete(`/cart/${id}`, {
-            product_id: id,
-          });
+          const res = await api.delete(`/cart/${id}`);
           pr(res);
           this.serverMessage = res.data.message;
+          this.$dispatch("cart:remove", { id: id });
         } catch (error) {
           pr(error, "product-cart-delete-error");
         } finally {

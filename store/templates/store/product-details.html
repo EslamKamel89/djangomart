@@ -130,12 +130,19 @@
       {% endfor %}
     </ul>
   </section>
+  <!--prettier-ignore-->
   {{ cart|json_script:"cart_data" }}
+  {{ product_info|json_script:'product_info'}}
   <script>
     function productDetails() {
       const cartData = JSON.parse(
         document.getElementById("cart_data").textContent
       );
+      pr(cartData, "cartData");
+      const productInfo = JSON.parse(
+        document.getElementById("product_info").textContent
+      );
+      pr(productInfo, "productInfo");
       productId = "{{ product.id }}";
       return {
         cartData,
@@ -148,7 +155,18 @@
             this.count = this.cartData[productId].count;
           }
           this.$watch("count", (c) => {
-            this.cartData[productId].count = c;
+            if (!this.cartData[productId]) {
+              this.cartData[productId] = {
+                title: productInfo.title,
+                price: productInfo.price,
+                count: c,
+                image: productInfo.image,
+                brand: productInfo.brand,
+                category: productInfo.category,
+              };
+            } else {
+              this.cartData[productId].count = c;
+            }
             this.$dispatch("cart-data-updated", this.cartData);
           });
         },

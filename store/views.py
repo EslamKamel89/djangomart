@@ -26,6 +26,14 @@ class ProductView(DetailView):
         product: Product = self.get_object()  # type: ignore
         data["related_products"] = Product.objects.filter(category=product.category)[2:]
         print(data["related_products"])
+        data["product_info"] = {
+            "title": product.title,
+            "price": product.price,
+            "count": 0,
+            "image": product.image.url,
+            "brand": product.brand,
+            "category": product.category.name,  # type: ignore
+        }
         return data
 
 
