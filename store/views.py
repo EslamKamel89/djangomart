@@ -2,9 +2,10 @@ from typing import Any
 
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views.generic import DetailView, ListView, TemplateView, View
 
+from store.forms import ProductForm
 from store.models import Category, Product
 
 
@@ -43,3 +44,18 @@ class CategoryView(DetailView):
 
     def get_queryset(self) -> QuerySet[Any]:
         return Category.objects.prefetch_related("products")
+
+
+class ProductFormView(View):
+    template_name = "store/product-form.html"
+
+    def get(self, request: HttpRequest):
+        form = ProductForm()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request: HttpRequest):
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect("/")
+        return render(request, self.template_name, {"form": form})
