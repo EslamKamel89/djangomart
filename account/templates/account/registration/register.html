@@ -3,5 +3,9 @@
 {% load crispy_forms_tags %}
 {% block title %} Create Account {% endblock %}
 {% block content %}
-<form action="" class="p-4">{% csrf_token %} {% crispy form %}</form>
+<!--prettier-ignore-->
+<form class="p-4">
+    {% csrf_token %}
+    {% crispy form %}
+</form>
 {% endblock %}
