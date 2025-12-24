@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "store",
     "cart",
     "account",
+    "crispy_forms",
+    "crispy_tailwind",
 ]
 
 MIDDLEWARE = [
@@ -140,3 +142,7 @@ else:
     STATICFILES_STORAGE = (
         "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
     )
+
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = ["tailwind"]
+CRISPY_TEMPLATE_PACK = "tailwind"

@@ -13,10 +13,11 @@ class CreateUserForm(UserCreationForm):
         email = self.cleaned_data.get("email")
         if email is None:
             raise forms.ValidationError("Email is required")
-        if User.objects.filter(email == email).exists():
+        if User.objects.filter(email=email).exists():
             raise forms.ValidationError("Email is taken")
         if len(email) >= 350:
             raise forms.ValidationError("Email is too long")
+        return email
 
     class Meta:
         model = User

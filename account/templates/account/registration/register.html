@@ -1,6 +1,7 @@
 <!--prettier-ignore-->
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block title %} Create Account {% endblock %}
 {% block content %}
-<form action="">{% csrf_token %} {{ form }}</form>
+<form action="" class="p-4">{% csrf_token %} {% crispy form %}</form>
 {% endblock %}
