@@ -4,7 +4,7 @@
 {% block title %} Create Account {% endblock %}
 {% block content %}
 <!--prettier-ignore-->
-<form class="p-4">
+<form class="p-4" method="POST">
     {% csrf_token %}
     {% crispy form %}
 </form>
