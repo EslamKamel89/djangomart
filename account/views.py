@@ -22,3 +22,13 @@ class RegisterView(View):
             login(request, user)
             return redirect("/")
         return render(request, "account/registration/register.html", {"form": form})
+
+
+class EmailVerification(View):
+    def get(self, request: HttpRequest): ...
+class EmailVerificationSent(View):
+    def get(self, request: HttpRequest): ...
+class EmailVerificationSuccess(View):
+    def get(self, request: HttpRequest): ...
+class EmailVerificationFailed(View):
+    def get(self, request: HttpRequest): ...
