@@ -5,7 +5,7 @@ from . import views
 urlpatterns: list[URLPattern] = [
     path("register", views.RegisterView.as_view(), name="register"),
     path(
-        "email-verification",
+        "email-verification/<str:uidb64>/<str:token>",
         views.EmailVerification.as_view(),
         name="email-verification",
     ),

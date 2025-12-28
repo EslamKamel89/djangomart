@@ -41,19 +41,33 @@ class RegisterView(View):
                 },
             )
             user.email_user(subject, message)
-            # login(request, user)
             return redirect(reverse("email-verification-sent"))
         return render(request, "account/registration/register.html", {"form": form})
 
 
 class EmailVerification(View):
-    def get(self, request: HttpRequest): ...
+    def get(self, request: HttpRequest, uidb64: str, token: str):
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(id=uid)
+        if user and user_tokenizer_generate.check_token(user, token):
+            user.is_active = True
+            user.save()
+            login(request, user)
+            return redirect(reverse("email-verification-success"))
+
+        return redirect("email-verification-failed")
+
+
 class EmailVerificationSent(View):
     def get(self, request: HttpRequest):
         return render(request, "account/registration/email-verification-sent.html")
 
 
 class EmailVerificationSuccess(View):
-    def get(self, request: HttpRequest): ...
+    def get(self, request: HttpRequest):
+        return render(request, "account/registration/email-verification-success.html")
+
+
 class EmailVerificationFailed(View):
-    def get(self, request: HttpRequest): ...
+    def get(self, request: HttpRequest):
+        return render(request, "account/registration/email-verification-failed.html")

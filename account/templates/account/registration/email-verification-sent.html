@@ -1,12 +1,46 @@
 <!--prettier-ignore-->
 {% extends 'base.html' %}
 
-{% block title %} Email Verification Send {% endblock %}
+{% block title %} Email Verification Sent {% endblock %}
 
 {% block content %}
 
-<div class="mt-16">
-  Email Verification Send to your email, please check your inbox
+<div class="min-h-[60vh] flex items-center justify-center px-4 py-16">
+  <div
+    class="max-w-md w-full bg-white border border-neutral rounded-xl shadow-sm p-8 text-center"
+  >
+    <!-- Info Icon -->
+    <div
+      class="mx-auto h-16 w-16 rounded-full bg-info/10 flex items-center justify-center"
+    >
+      <i class="bi bi-envelope-check-fill text-info text-3xl"></i>
+    </div>
+
+    <!-- Heading -->
+    <h1 class="mt-6 text-2xl font-bold text-neutral-900">
+      Verify Your Email 📩
+    </h1>
+
+    <!-- Message -->
+    <p class="mt-3 text-neutral-700 leading-relaxed">
+      We sent a verification link to your email address.<br />
+      Please check your inbox and follow the link to complete registration.
+    </p>
+
+    <!-- CTA Buttons -->
+    <div class="mt-8 flex flex-col gap-3">
+      <a
+        href="/"
+        class="inline-flex items-center justify-center px-5 py-3 rounded-lg bg-primary text-white font-medium shadow hover:brightness-110 transition"
+      >
+        Go to Home
+      </a>
+
+      <a href="/" class="text-sm text-primary hover:underline transition">
+        Didn’t receive the email? Resend →
+      </a>
+    </div>
+  </div>
 </div>
 
 {% endblock %}

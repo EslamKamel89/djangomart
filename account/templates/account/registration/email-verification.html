@@ -1,10 +1,116 @@
-<!--prettier-ignore-->
-{% extends 'base.html' %}
+{% autoescape off %}
+<!DOCTYPE html>
+<html lang="en" style="margin: 0; padding: 0">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Email Verification</title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #f3f4f6;
+    "
+  >
+    <table
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      role="presentation"
+      style="background-color: #f3f4f6; padding: 30px 0"
+    >
+      <tr>
+        <td align="center">
+          <!-- Main Card -->
+          <table
+            width="600"
+            cellpadding="0"
+            cellspacing="0"
+            role="presentation"
+            style="
+              background-color: #ffffff;
+              border-radius: 12px;
+              padding: 40px;
+              border: 1px solid #e5e7eb;
+            "
+          >
+            <tr>
+              <td
+                align="center"
+                style="font-size: 28px; font-weight: bold; color: #0f766e"
+              >
+                DjangoMart
+              </td>
+            </tr>
 
-{% block title %} Email Verification  {% endblock %}
+            <tr>
+              <td
+                align="left"
+                style="
+                  font-size: 16px;
+                  color: #111827;
+                  margin-top: 24px;
+                  padding-top: 20px;
+                "
+              >
+                <p style="margin: 0 0 12px">Hi there 👋,</p>
+                <p style="margin: 0 0 12px">
+                  Thank you for registering! Before you get started, we just
+                  need to verify your email address.
+                </p>
+                <p style="margin: 0 0 24px">
+                  Please click the button below to activate your account:
+                </p>
 
-{% block content %}
+                <!-- CTA Button -->
+                <p style="text-align: center; margin: 30px 0">
+                  <a
+                    href="http://{{domain}}{% url 'email-verification' uidb64=uid token=token %}"
+                    style="
+                      background-color: #0f766e;
+                      color: #ffffff;
+                      text-decoration: none;
+                      padding: 14px 32px;
+                      border-radius: 8px;
+                      font-size: 16px;
+                      font-weight: bold;
+                      display: inline-block;
+                    "
+                  >
+                    Verify Email
+                  </a>
+                </p>
 
-<div class="mt-16">Email Verification</div>
+                <p style="margin: 0 0 12px">
+                  If the button above doesn't work, you can copy and paste the
+                  link below into your browser:
+                </p>
 
-{% endblock %}
+                <!-- Fallback URL -->
+                <a
+                  style="color: #0f766e; font-size: 14px; word-break: break-all"
+                  href="http://{{domain}}{% url 'email-verification' uidb64=uid token=token %}"
+                >
+                  http://{{domain}}{% url 'email-verification' uidb64=uid
+                  token=token %}
+                </a>
+
+                <p style="margin-top: 32px; font-size: 14px; color: #6b7280">
+                  If you did not sign up for this account, please ignore this
+                  email.
+                </p>
+              </td>
+            </tr>
+          </table>
+          <!-- End Card -->
+
+          <p style="margin-top: 20px; font-size: 12px; color: #6b7280">
+            © {{year}} DjangoMart — All Rights Reserved
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+{% endautoescape %}
