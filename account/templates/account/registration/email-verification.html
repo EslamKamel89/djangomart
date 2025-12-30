@@ -66,7 +66,7 @@
                 <!-- CTA Button -->
                 <p style="text-align: center; margin: 30px 0">
                   <a
-                    href="http://{{domain}}{% url 'email-verification' uidb64=uid token=token %}"
+                    href="http://{{domain}}/account/email-verification/{{uid}}/{{token}}"
                     style="
                       background-color: #0f766e;
                       color: #ffffff;
@@ -90,10 +90,9 @@
                 <!-- Fallback URL -->
                 <a
                   style="color: #0f766e; font-size: 14px; word-break: break-all"
-                  href="http://{{domain}}{% url 'email-verification' uidb64=uid token=token %}"
+                  href="http://{{domain}}/account/email-verification/{{uid}}/{{token}}"
                 >
-                  http://{{domain}}{% url 'email-verification' uidb64=uid
-                  token=token %}
+                  http://{{domain}}/account/email-verification/{{uid}}/{{token}}
                 </a>
 
                 <p style="margin-top: 32px; font-size: 14px; color: #6b7280">

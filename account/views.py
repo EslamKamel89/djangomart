@@ -1,6 +1,7 @@
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
@@ -40,7 +41,7 @@ class RegisterView(View):
                     "token": user_tokenizer_generate.make_token(user),
                 },
             )
-            user.email_user(subject, message)
+            user.email_user(subject, "Please verify your email", html_message=message)
             return redirect(reverse("email-verification-sent"))
         return render(request, "account/registration/register.html", {"form": form})
 

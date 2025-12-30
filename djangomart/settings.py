@@ -147,4 +147,11 @@ else:
 CRISPY_ALLOWED_TEMPLATE_PACKS = ["tailwind"]
 CRISPY_TEMPLATE_PACK = "tailwind"
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587  # TLS port
+EMAIL_USE_TLS = True  # Required for Gmail
+EMAIL_HOST_USER = "eslamkamelforex@gmail.com"
+EMAIL_HOST_PASSWORD = "jgmblvxcywzdylhw"
+DEFAULT_FROM_EMAIL = "eslamkamelforex@gmail.com"
