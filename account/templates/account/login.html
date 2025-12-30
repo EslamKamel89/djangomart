@@ -1,10 +1,21 @@
 <!--prettier-ignore-->
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 {% block title %} Login {% endblock %}
 
 {% block content %}
 
-<div class="mt-16">Login</div>
+<!--prettier-ignore-->
+<form class="p-4" method="POST">
+    {% if messages %}
+    <ul class="text-red-600 text-center">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% csrf_token %}
+    {% crispy form %}
+</form>
 
 {% endblock %}

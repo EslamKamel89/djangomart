@@ -3,6 +3,7 @@ from django.urls import URLPattern, path
 from . import views
 
 urlpatterns: list[URLPattern] = [
+    path("login", views.LoginView.as_view(), name="login"),
     path("register", views.RegisterView.as_view(), name="register"),
     path(
         "email-verification/<str:uidb64>/<str:token>",

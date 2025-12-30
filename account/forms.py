@@ -1,10 +1,12 @@
-from typing import Any
+from typing import Any, Mapping
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Field, Layout, Submit
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
+from django.forms.renderers import BaseRenderer
+from django.forms.utils import ErrorList
 
 INPUT_STYLES = (
     "block w-full rounded-md border border-gray-300 px-3 py-2 "
@@ -50,3 +52,16 @@ class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ["username", "email", "password1", "password2"]
+
+
+class LoginForm(AuthenticationForm):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_method = "POST"
+        self.helper.form_class = "space-y-4 max-w-lg mx-auto"
+        self.helper.layout = Layout(
+            Field("username", css_class=INPUT_STYLES),
+            Field("password", css_class=PASSWORD_STYLES),
+            Submit("submit", "Log in", css_class=SUBMIT_STYLES),
+        )

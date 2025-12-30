@@ -1,4 +1,5 @@
-from django.contrib.auth import login
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
@@ -10,7 +11,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views import View
 
-from account.forms import CreateUserForm
+from account.forms import CreateUserForm, LoginForm
 
 from .token import user_tokenizer_generate
 
@@ -72,3 +73,23 @@ class EmailVerificationSuccess(View):
 class EmailVerificationFailed(View):
     def get(self, request: HttpRequest):
         return render(request, "account/registration/email-verification-failed.html")
+
+
+class LoginView(View):
+    def get(self, request: HttpRequest):
+        if request.user.is_authenticated:
+            return redirect("/")
+        form = LoginForm()
+        return render(request, "account/login.html", {"form": form})
+
+    def post(self, request: HttpRequest):
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get("username")
+            password = form.cleaned_data.get("password")
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect("/")
+            messages.error(request, "Invalid username or password")
+        return render(request, "account/login.html", {"form": form})
