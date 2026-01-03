@@ -155,3 +155,6 @@ EMAIL_USE_TLS = True  # Required for Gmail
 EMAIL_HOST_USER = "eslamkamelforex@gmail.com"
 EMAIL_HOST_PASSWORD = "jgmblvxcywzdylhw"
 DEFAULT_FROM_EMAIL = "eslamkamelforex@gmail.com"
+
+
+LOGIN_URL = "/account/login"

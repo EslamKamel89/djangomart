@@ -15,11 +15,15 @@
     </span>
   </a>
 
-  <form method="post" action="/" class="hidden sm:inline-block">
+  <form
+    method="post"
+    action="{% url 'logout' %}"
+    class="hidden sm:inline-block"
+  >
     {% csrf_token %}
     <button
       type="submit"
-      class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-neutral text-neutral-700 hover:bg-neutral-100 transition"
+      class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-neutral text-neutral-700 hover:bg-neutral-100 transition cursor-pointer"
     >
       <i class="bi bi-box-arrow-right"></i>
       <span class="text-sm font-medium">Logout</span>

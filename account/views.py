@@ -1,5 +1,7 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
@@ -93,3 +95,17 @@ class LoginView(View):
                 return redirect("/")
             messages.error(request, "Invalid username or password")
         return render(request, "account/login.html", {"form": form})
+
+
+class LogoutView(View):
+    def post(self, request: HttpRequest):
+        if request.user.is_authenticated:
+            logout(request)
+        return redirect("/")
+
+
+class DashboardView(LoginRequiredMixin, View):
+    def get(self, request: HttpRequest):
+        if not request.user.is_authenticated:
+            return redirect(reverse("login"))
+        return render(request, "account/dashboard/dashboard.html")

@@ -28,8 +28,13 @@
           {% include "partials/categories-dropdown.html" %}
         </div>
       </div>
-
-      <a href="/" class="px-2 py-2 rounded-md hover:bg-neutral-50">Link</a>
+      {% if user.is_authenticated %}
+      <a
+        href="{% url 'dashboard' %}"
+        class="px-2 py-2 rounded-md hover:bg-neutral-50"
+        >Dashboard</a
+      >
+      {% endif %}
       <a href="/" class="px-2 py-2 rounded-md hover:bg-neutral-50">Link</a>
 
       {% if user.is_authenticated %}
