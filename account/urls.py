@@ -8,6 +8,16 @@ urlpatterns: list[URLPattern] = [
     path("logout", views.LogoutView.as_view(), name="logout"),
     path("dashboard", views.DashboardView.as_view(), name="dashboard"),
     path(
+        "dashboard/account-delete",
+        views.AccountDeleteView.as_view(),
+        name="account-delete",
+    ),
+    path(
+        "dashboard/account-management",
+        views.AccountManagementView.as_view(),
+        name="account-management",
+    ),
+    path(
         "email-verification/<str:uidb64>/<str:token>",
         views.EmailVerification.as_view(),
         name="email-verification",

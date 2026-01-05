@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
@@ -13,7 +13,12 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views import View
 
-from account.forms import CreateUserForm, LoginForm
+from account.forms import (
+    CreateUserForm,
+    LoginForm,
+    ResetUserPasswordForm,
+    UpdateUserForm,
+)
 
 from .token import user_tokenizer_generate
 
@@ -97,15 +102,57 @@ class LoginView(View):
         return render(request, "account/login.html", {"form": form})
 
 
-class LogoutView(View):
+class LogoutView(LoginRequiredMixin, View):
     def post(self, request: HttpRequest):
-        if request.user.is_authenticated:
-            logout(request)
+        logout(request)
         return redirect("/")
 
 
 class DashboardView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest):
-        if not request.user.is_authenticated:
-            return redirect(reverse("login"))
         return render(request, "account/dashboard/dashboard.html")
+
+
+class AccountDeleteView(LoginRequiredMixin, View):
+    def get(self, request: HttpRequest):
+        return render(request, "account/dashboard/account-delete.html")
+
+
+class AccountManagementView(LoginRequiredMixin, View):
+    def get(self, request: HttpRequest):
+        basic_form = UpdateUserForm(instance=request.user)
+        password_form = ResetUserPasswordForm(request.user)
+        return render(
+            request,
+            "account/dashboard/account-management.html",
+            {"basic_form": basic_form, "password_form": password_form},
+        )
+
+    def post(self, request: HttpRequest):
+        form_type = request.POST.get("type")
+        basic_form = UpdateUserForm(
+            request.POST if form_type == "basic" else None,
+            instance=request.user,
+        )
+        password_form = ResetUserPasswordForm(
+            request.user,
+            request.POST if form_type == "password" else None,
+        )
+        if form_type == "basic":
+            if basic_form.is_valid():
+                basic_form.save()
+                messages.success(request, "Account Details updated successfully")
+            return redirect(reverse("dashboard"))
+        elif form_type == "password":
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, "Password updated successfully")
+                return redirect(reverse("dashboard"))
+        else:
+            messages.error(request, "Invalid form submission")
+        return render(
+            request,
+            "account/dashboard/account-management.html",
+            {"basic_form": basic_form, "password_form": password_form},
+        )

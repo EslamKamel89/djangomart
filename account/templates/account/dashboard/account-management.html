@@ -1,0 +1,88 @@
+<!--prettier-ignore-->
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %} Account Management {% endblock %}
+
+{% block content %}
+
+<div
+  class="max-w-4xl mx-auto px-4 py-16"
+  x-data="{ tab: sessionStorage.getItem('account-tab')|| 'basic' }"
+>
+  <!-- Page Header -->
+  <div class="mb-10">
+    <h1 class="text-3xl font-bold text-neutral-900">Account management</h1>
+    <p class="mt-2 text-sm text-muted">
+      Update your personal information or change your password.
+    </p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex gap-2 border-b border-neutral mb-8">
+    <button
+      @click="tab = 'basic'; sessionStorage.setItem('account-tab' , 'basic')"
+      :class="tab === 'basic'
+        ? 'border-primary text-primary'
+        : 'border-transparent text-neutral-500 hover:text-neutral-700'"
+      class="px-4 py-3 text-sm font-medium border-b-2 transition"
+    >
+      Account details
+    </button>
+
+    <button
+      @click="tab = 'password'; sessionStorage.setItem('account-tab','password')"
+      :class="tab === 'password'
+        ? 'border-primary text-primary'
+        : 'border-transparent text-neutral-500 hover:text-neutral-700'"
+      class="px-4 py-3 text-sm font-medium border-b-2 transition"
+    >
+      Change password
+    </button>
+  </div>
+
+  <!-- Messages (shared) -->
+  {% if messages %}
+  <ul class="mb-6 space-y-2 text-center">
+    {% for message in messages %}
+    <li
+      class="text-sm {% if 'error' in message.tags %} text-error {% endif %} {% if 'success' in message.tags %} text-success {% endif %}"
+    >
+      {{ message }}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <!-- Account details form -->
+  <section x-show="tab === 'basic'" x-cloak>
+    <div class="bg-white border border-neutral rounded-xl shadow-sm p-6 md:p-8">
+      <h2 class="text-lg font-semibold text-neutral-900 mb-4">
+        Update account details
+      </h2>
+
+      <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="type" value="basic" />
+        {% crispy basic_form %}
+      </form>
+    </div>
+  </section>
+
+  <!-- Password form -->
+  <section x-show="tab === 'password'" x-cloak>
+    <div class="bg-white border border-neutral rounded-xl shadow-sm p-6 md:p-8">
+      <h2 class="text-lg font-semibold text-neutral-900 mb-4">
+        Change password
+      </h2>
+
+      <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="type" value="password" />
+        {% crispy password_form %}
+      </form>
+    </div>
+  </section>
+</div>
+
+{% endblock %}
