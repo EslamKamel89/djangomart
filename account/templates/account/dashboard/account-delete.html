@@ -4,6 +4,67 @@
 {% block title %} Delete Account {% endblock %}
 
 {% block content %}
-<h1>Delete Account</h1>
+
+<div class="min-h-[60vh] flex items-center justify-center px-4 py-16">
+  <div
+    class="max-w-lg w-full bg-white border border-neutral rounded-2xl shadow-sm p-8"
+  >
+    <!-- Header -->
+    <div class="flex items-start gap-4">
+      <div
+        class="h-12 w-12 rounded-full bg-error/10 flex items-center justify-center"
+      >
+        <i class="bi bi-exclamation-triangle-fill text-error text-xl"></i>
+      </div>
+
+      <div>
+        <h1 class="text-2xl font-bold text-neutral-900">
+          Delete your account?
+        </h1>
+        <p class="mt-1 text-sm text-muted">This action cannot be undone.</p>
+      </div>
+    </div>
+
+    <!-- Warning content -->
+    <div class="mt-6 border border-error/30 bg-error/5 rounded-lg p-4">
+      <p class="text-sm text-neutral-800">
+        Deleting your account will permanently remove:
+      </p>
+      <ul class="mt-3 list-disc list-inside text-sm text-neutral-700 space-y-1">
+        <li>Your profile and personal information</li>
+        <li>Your orders and order history</li>
+        <li>Any saved preferences or data</li>
+      </ul>
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-8 flex flex-col sm:flex-row items-center gap-4">
+      <!-- Cancel -->
+      <a
+        href="{% url 'dashboard' %}"
+        class="inline-flex items-center justify-center w-full sm:w-auto px-5 py-3 rounded-lg border border-neutral text-neutral-700 hover:bg-neutral-100 transition"
+      >
+        Cancel
+      </a>
+
+      <!-- Confirm delete -->
+      <form method="POST" class="w-full sm:w-auto">
+        {% csrf_token %}
+        <button
+          type="submit"
+          class="inline-flex items-center justify-center w-full sm:w-auto px-5 py-3 rounded-lg bg-error text-white font-medium hover:brightness-95 transition"
+        >
+          <i class="bi bi-trash mr-2"></i>
+          Yes, delete my account
+        </button>
+      </form>
+    </div>
+
+    <!-- Footer note -->
+    <p class="mt-6 text-xs text-muted text-center">
+      If you changed your mind, you can safely return to your dashboard.
+    </p>
+  </div>
+</div>
 
 {% endblock %}

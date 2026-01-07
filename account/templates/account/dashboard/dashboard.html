@@ -51,25 +51,46 @@
         </p>
       </div>
 
-      <div class="mt-6 flex flex-wrap items-center gap-4">
-        <a
-          href="{% url 'account-management' %}"
-          class="inline-flex items-center gap-2 text-primary font-medium hover:underline"
-        >
-          Profile management
-          <i class="bi bi-arrow-right"></i>
-        </a>
-
-        <form method="post" action="{% url 'logout' %}">
-          {% csrf_token %}
-          <button
-            type="submit"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-neutral text-neutral-700 hover:bg-neutral-100 transition"
+      <!-- Actions -->
+      <div class="mt-6 space-y-4">
+        <!-- Primary actions -->
+        <div class="flex flex-wrap items-center gap-4">
+          <a
+            href="{% url 'account-management' %}"
+            class="inline-flex items-center gap-2 text-primary font-medium hover:underline"
           >
-            Logout
-            <i class="bi bi-box-arrow-right"></i>
-          </button>
-        </form>
+            Profile management
+            <i class="bi bi-arrow-right"></i>
+          </a>
+
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button
+              type="submit"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-neutral text-neutral-700 hover:bg-neutral-100 transition"
+            >
+              Logout
+              <i class="bi bi-box-arrow-right"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- Danger zone -->
+        <div class="pt-4 border-t border-neutral">
+          <p class="text-xs text-muted mb-2">Danger zone</p>
+
+          <a
+            href="{% url 'account-delete' %}"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-error text-error font-medium hover:bg-error hover:text-white transition"
+          >
+            <i class="bi bi-trash"></i>
+            Delete account
+          </a>
+
+          <p class="mt-2 text-xs text-muted max-w-md">
+            Deleting your account is permanent and cannot be undone.
+          </p>
+        </div>
       </div>
     </div>
   </section>

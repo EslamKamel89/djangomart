@@ -117,6 +117,12 @@ class AccountDeleteView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest):
         return render(request, "account/dashboard/account-delete.html")
 
+    def post(self, request: HttpRequest):
+        user = User.objects.filter(id=request.user.id)  # type: ignore
+        user.delete()
+        logout(request)
+        return redirect(reverse("dashboard"))
+
 
 class AccountManagementView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest):

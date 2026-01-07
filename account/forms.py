@@ -69,6 +69,7 @@ class LoginForm(AuthenticationForm):
 class UpdateUserForm(forms.ModelForm):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
+        self.fields["email"].required = True
         self.helper = FormHelper(self)
         self.helper.form_method = "POST"
         self.helper.form_class = "space-y-4 max-w-lg mx-auto"
