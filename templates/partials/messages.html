@@ -1,0 +1,16 @@
+{% if messages %}
+<div>
+  <ul class="mb-6 space-y-2 text-center fixed bottom-0 right-0">
+    {% for message in messages %}
+    <li
+      class="p-4 rounded-lg bg-primary text-white {% if 'error' in message.tags %} bg-error {% endif %} {% if 'success' in message.tags %} bg-success {% endif %}"
+      x-data="{show:true}"
+      x-show="show"
+      x-init="setTimeout(()=>show=false , 2000)"
+    >
+      {{ message }}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}

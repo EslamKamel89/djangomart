@@ -149,6 +149,10 @@
       <div>{% include "partials/navbar.html" %}</div>
       <main>{% block content %} {% endblock %}</main>
     </div>
-    {% block js %} {% endblock %} {% include "partials/js.html" %}
+    <!--prettier-ignore-->
+    {% include 'partials/messages.html' %}
+    {% block js %}
+    {% endblock %}
+    {% include "partials/js.html" %}
   </body>
 </html>

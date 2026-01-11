@@ -99,7 +99,7 @@ class LoginView(View):
                 login(request, user)
                 messages.success(request, "Login successful")
                 return redirect("/")
-            messages.error(request, "Invalid username or password")
+        messages.error(request, "Invalid username or password")
         return render(request, "account/login.html", {"form": form})
 
 
