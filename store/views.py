@@ -1,9 +1,10 @@
 from typing import Any
 
+from django.contrib import messages
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.shortcuts import redirect, render
-from django.views.generic import DetailView, ListView, TemplateView, View
+from django.views.generic import DetailView, View
 
 from store.forms import ProductForm
 from store.models import Category, Product
@@ -26,7 +27,6 @@ class ProductView(DetailView):
         data = super().get_context_data(**kwargs)
         product: Product = self.get_object()  # type: ignore
         data["related_products"] = Product.objects.filter(category=product.category)[2:]
-        print(data["related_products"])
         data["product_info"] = {
             "title": product.title,
             "price": product.price,
@@ -57,5 +57,7 @@ class ProductFormView(View):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
+            messages.success(request, "Product created successfully.")
             return redirect("/")
+        messages.error(request, "Failed to create product. Please check the form.")
         return render(request, self.template_name, {"form": form})
