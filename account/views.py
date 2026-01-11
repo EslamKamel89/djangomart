@@ -97,6 +97,7 @@ class LoginView(View):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
+                messages.success(request, "Login successful")
                 return redirect("/")
             messages.error(request, "Invalid username or password")
         return render(request, "account/login.html", {"form": form})
@@ -104,7 +105,9 @@ class LoginView(View):
 
 class LogoutView(LoginRequiredMixin, View):
     def post(self, request: HttpRequest):
+        cart = request.session.get("cart")
         logout(request)
+        request.session["cart"] = cart
         return redirect("/")
 
 
