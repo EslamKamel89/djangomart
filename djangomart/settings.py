@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "store",
     "cart",
     "account",
+    "payment",
     "crispy_forms",
     "crispy_tailwind",
     "debug_toolbar",
