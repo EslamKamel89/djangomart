@@ -1,3 +1,8 @@
-from django.urls import URLPattern
+from django.urls import URLPattern, path
 
-urlpatterns: list[URLPattern] = []
+from . import views
+
+urlpatterns: list[URLPattern] = [
+    path("success", views.PaymentSuccess.as_view(), name="payment-success"),
+    path("failure", views.PaymentFailure.as_view(), name="payment-failure"),
+]
