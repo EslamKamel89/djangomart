@@ -201,14 +201,16 @@ class ShippingAddressView(LoginRequiredMixin, View):
         shipping_address: ShippingAddress | None = ShippingAddress.objects.filter(
             user=request.user
         ).first()
-        form = ShippingAddressForm(instance=shipping_address)
+        form = ShippingAddressForm(btn_label="Save Address", instance=shipping_address)
         return render(request, "account/shipping/manage-shipping.html", {"form": form})
 
     def post(self, request: HttpRequest):
         shipping_address: ShippingAddress | None = ShippingAddress.objects.filter(
             user=request.user
         ).first()
-        form = ShippingAddressForm(data=request.POST, instance=shipping_address)
+        form = ShippingAddressForm(
+            btn_label="Save Address", data=request.POST, instance=shipping_address
+        )
         if form.is_valid():
             shipping_address = form.save(commit=False)
             if shipping_address is None:

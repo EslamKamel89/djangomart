@@ -8,7 +8,7 @@ from payment.models import ShippingAddress
 
 
 class ShippingAddressForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, btn_label: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_method = "post"
@@ -21,7 +21,7 @@ class ShippingAddressForm(forms.ModelForm):
             Field("city", css_class=INPUT_STYLES),
             Field("state", css_class=INPUT_STYLES),
             Field("zipcode", css_class=INPUT_STYLES),
-            Submit("submit", "Save Address", css_class=SUBMIT_STYLES),
+            Submit("submit", btn_label, css_class=SUBMIT_STYLES),
         )
 
     class Meta:
