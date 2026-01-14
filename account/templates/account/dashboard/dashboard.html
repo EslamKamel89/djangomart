@@ -23,20 +23,39 @@
     >
       <div>
         <h3 class="text-lg font-semibold text-neutral-900">
-          Track your orders
+          Orders & Shipping
         </h3>
         <p class="mt-2 text-sm text-muted">
-          View order history, track shipments, and manage returns.
+          Track orders, manage deliveries, and update your shipping address.
         </p>
       </div>
 
-      <a
-        href="/"
-        class="mt-6 inline-flex items-center gap-2 text-primary font-medium hover:underline"
-      >
-        Order management
-        <i class="bi bi-arrow-right"></i>
-      </a>
+      <!-- Actions -->
+      <div class="mt-6 space-y-3">
+        <!-- Manage Shipping (Primary action) -->
+        <a
+          href="{% url 'shipping-address' %}"
+          class="inline-flex items-center justify-between w-full px-4 py-3 rounded-lg bg-primary text-white font-medium shadow hover:brightness-110 transition"
+        >
+          <span class="flex items-center gap-2">
+            <i class="bi bi-truck"></i>
+            Manage shipping
+          </span>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+
+        <!-- Order management (Secondary action) -->
+        <a
+          href="/"
+          class="inline-flex items-center justify-between w-full px-4 py-3 rounded-lg border border-neutral text-neutral-700 hover:bg-neutral-100 transition"
+        >
+          <span class="flex items-center gap-2">
+            <i class="bi bi-receipt"></i>
+            Order management
+          </span>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
     </div>
 
     <div

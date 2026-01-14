@@ -21,6 +21,11 @@ urlpatterns: list[URLPattern] = [
         name="account-management",
     ),
     path(
+        "dashboard/shipping-address",
+        views.ShippingAddressView.as_view(),
+        name="shipping-address",
+    ),
+    path(
         "email-verification/<str:uidb64>/<str:token>",
         views.EmailVerification.as_view(),
         name="email-verification",

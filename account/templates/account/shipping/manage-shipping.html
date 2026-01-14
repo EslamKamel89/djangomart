@@ -1,0 +1,64 @@
+<!--prettier-ignore-->
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %} Manage Shipping {% endblock %}
+
+{% block content %}
+
+<div class="min-h-[60vh] flex items-center justify-center px-4 py-16">
+  <div
+    class="max-w-xl w-full bg-white border border-neutral rounded-2xl shadow-sm p-8"
+  >
+    <!-- Header -->
+    <div class="text-center">
+      <div
+        class="mx-auto h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center"
+      >
+        <i class="bi bi-truck text-primary text-2xl"></i>
+      </div>
+
+      <h1 class="mt-6 text-2xl font-bold text-neutral-900">
+        Manage your shipping details
+      </h1>
+
+      <p class="mt-2 text-sm text-muted">
+        Update your delivery address to ensure your orders arrive on time and
+        without issues.
+      </p>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+    <ul class="mt-6 space-y-2 text-center">
+      {% for message in messages %}
+      <li
+        class="text-sm {% if 'error' in message.tags %} text-error {% endif %} {% if 'success' in message.tags %} text-success {% endif %}"
+      >
+        {{ message }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <!-- Form -->
+    <form method="POST" class="mt-8 space-y-4">
+      {% csrf_token %} {% crispy form %}
+    </form>
+
+    <!-- Helper links -->
+    <div
+      class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm"
+    >
+      <a href="/" class="text-muted hover:text-primary transition">
+        ← Back to dashboard
+      </a>
+
+      <p class="text-xs text-muted text-center sm:text-right">
+        This address will be used for future orders by default.
+      </p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

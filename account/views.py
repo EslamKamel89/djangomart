@@ -1,3 +1,5 @@
+from http.client import HTTPException
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -17,6 +19,8 @@ from account.forms import (
     ResetUserPasswordForm,
     UpdateUserForm,
 )
+from payment.forms import ShippingAddressForm
+from payment.models import ShippingAddress
 
 from .token import user_tokenizer_generate
 
@@ -190,3 +194,28 @@ class AccountManagementView(LoginRequiredMixin, View):
             "account/dashboard/account-management.html",
             {"basic_form": basic_form, "password_form": password_form},
         )
+
+
+class ShippingAddressView(LoginRequiredMixin, View):
+    def get(self, request: HttpRequest):
+        shipping_address: ShippingAddress | None = ShippingAddress.objects.filter(
+            user=request.user
+        ).first()
+        form = ShippingAddressForm(instance=shipping_address)
+        return render(request, "account/shipping/manage-shipping.html", {"form": form})
+
+    def post(self, request: HttpRequest):
+        shipping_address: ShippingAddress | None = ShippingAddress.objects.filter(
+            user=request.user
+        ).first()
+        form = ShippingAddressForm(data=request.POST, instance=shipping_address)
+        if form.is_valid():
+            shipping_address = form.save(commit=False)
+            if shipping_address is None:
+                raise HTTPException("Failed to update the shipping address")
+            shipping_address.user = request.user  # type: ignore
+            shipping_address.save()
+            messages.success(request, "Shipping address saved successfully")
+            return redirect(request.path)
+        messages.error(request, "Please fix the validation errors")
+        return render(request, "account/shipping/manage-shipping.html", {"form": form})

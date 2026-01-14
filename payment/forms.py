@@ -16,8 +16,8 @@ class ShippingAddressForm(forms.ModelForm):
         self.helper.layout = Layout(
             Field("full_name", css_class=INPUT_STYLES),
             Field("email", css_class=INPUT_STYLES),
-            Field("address1", css_class=INPUT_STYLES),
-            Field("address2", css_class=INPUT_STYLES),
+            Field("address1", css_class=INPUT_STYLES, rows=3),
+            Field("address2", css_class=INPUT_STYLES, rows=3),
             Field("city", css_class=INPUT_STYLES),
             Field("state", css_class=INPUT_STYLES),
             Field("zipcode", css_class=INPUT_STYLES),
@@ -35,3 +35,7 @@ class ShippingAddressForm(forms.ModelForm):
             "state",
             "zipcode",
         )
+        labels = {
+            "address1": "Street address",
+            "address2": "Apartment, suite, unit (optional)",
+        }
