@@ -1,7 +1,6 @@
 <!--prettier-ignore-->
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
-
 {% block title %} Checkout {% endblock %}
 
 {% block content %}
@@ -52,7 +51,7 @@
         <div class="mt-4 space-y-3 text-sm">
           <div class="flex justify-between">
             <span class="text-muted">Subtotal</span>
-            <span class="text-neutral-900">$99.00</span>
+            <span class="text-neutral-900">${{cart_total}}</span>
           </div>
 
           <div class="flex justify-between">
@@ -64,7 +63,7 @@
             class="flex justify-between border-t border-neutral pt-3 font-semibold"
           >
             <span>Total</span>
-            <span class="text-primary">$99.00</span>
+            <span class="text-primary">${{cart_total}}</span>
           </div>
         </div>
 
@@ -76,7 +75,7 @@
 
         <!-- Back link -->
         <a
-          href="/"
+          href="{% url 'cart-show-create' %}"
           class="mt-4 inline-flex items-center gap-2 text-sm text-primary hover:underline"
         >
           ← Return to cart

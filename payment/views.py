@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic import TemplateView
 
+from cart.cart_service import CartService
 from payment.forms import ShippingAddressForm
 from payment.models import ShippingAddress
 
@@ -17,7 +18,11 @@ class CheckoutView(View):
         form = ShippingAddressForm(
             btn_label="Complete Order", instance=shipping_address
         )
-        return render(request, "payment/checkout.html", {"form": form})
+        cart = CartService(request).cart
+        cart_total = sum(item["price"] * item["count"] for item in cart.values())
+        return render(
+            request, "payment/checkout.html", {"form": form, "cart_total": cart_total}
+        )
 
     def post(self, request: HttpRequest): ...
 
