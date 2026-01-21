@@ -1,8 +1,10 @@
 from decimal import Decimal
 from http.client import HTTPException
+from typing import Any
 
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.http import HttpRequest
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -12,7 +14,7 @@ from django.views.generic import TemplateView
 from cart.cart_service import CartService
 from cart.types import Cart
 from payment.forms import ShippingAddressForm
-from payment.models import Order, ShippingAddress
+from payment.models import Order, OrderItem, ShippingAddress
 
 # Create your views here.
 
@@ -25,6 +27,36 @@ class CheckoutView(View):
     def is_cart_empty(self, cart: Cart):
         return len(cart) == 0
 
+    def save_order(
+        self,
+        user: User | None,
+        cart: Cart,
+        cleaned_data: dict[str, Any],
+        shipping_address_text: str,
+        cart_total: Decimal,
+    ) -> tuple[Order, list[OrderItem]]:
+        if not cart:
+            raise ValueError("can not create an order with empty cart")
+        with transaction.atomic():
+            order = Order.objects.create(
+                full_name=cleaned_data["full_name"],
+                email=cleaned_data["email"],
+                shipping_address=shipping_address_text,
+                amount_paid=cart_total,
+                user=user,
+            )
+            items: list[OrderItem] = []
+            for product_id, cart_item in cart.items():
+                product_id = int(product_id)
+                item = OrderItem.objects.create(
+                    order=order,
+                    product_id=product_id,
+                    quantity=cart_item["count"],
+                    price=Decimal(str(cart_item["price"])),
+                )
+                items.append(item)
+        return (order, items)
+
     def get(self, request: HttpRequest):
         cart_service = CartService(request)
         cart = cart_service.cart
@@ -36,7 +68,7 @@ class CheckoutView(View):
         form = ShippingAddressForm(
             btn_label="Complete Order", instance=shipping_address
         )
-        cart_total = cart_service.get_total()
+        cart_total: Decimal = cart_service.get_total()
         return render(
             request, "payment/checkout.html", {"form": form, "cart_total": cart_total}
         )
@@ -64,17 +96,13 @@ class CheckoutView(View):
             shipping_address_obj = form.save(commit=False)
             if shipping_address_obj is None:
                 raise HTTPException("Failed to update the shipping address")
-            if request.user.is_authenticated:
-                shipping_address_obj.user = request.user  # type: ignore
+            if user is not None:
+                shipping_address_obj.user = user
                 shipping_address_obj.save()
                 messages.success(request, "Shipping address saved successfully")
             shipping_address_text = Order.format_shipping_address(shipping_address_obj)
-            order = Order.objects.create(
-                full_name=form.cleaned_data.get("full_name"),
-                email=form.cleaned_data.get("email"),
-                shipping_address=shipping_address_text,
-                amount_paid=cart_total,
-                user=user,
+            order, items = self.save_order(
+                user, cart, form.cleaned_data, shipping_address_text, cart_total
             )
             # todo: handle the checkout payment flow
             messages.success(request, "Checkout details confirmed successfully")
