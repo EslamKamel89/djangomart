@@ -44,7 +44,7 @@ class Order(models.Model):
         return f"Order #{self.id} - {self.full_name} (${self.amount_paid:.2f})"
 
     @staticmethod
-    def get_shipping_address(obj: ShippingAddress):
+    def format_shipping_address(obj: ShippingAddress):
         parts = [
             obj.address1,
             obj.address2,
