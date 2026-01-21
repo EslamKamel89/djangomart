@@ -77,10 +77,6 @@ class OrderItemAdmin(admin.ModelAdmin):
         "order",
         "product",
     )
-    list_filter = (
-        "order",
-        "product",
-    )
     search_fields = (
         "order__id",
         "product__title",

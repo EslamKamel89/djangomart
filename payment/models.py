@@ -9,6 +9,7 @@ import store.models as store_models
 
 
 class ShippingAddress(models.Model):
+    id: int
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="shipping_addresses"
     )
