@@ -10,7 +10,7 @@ from django.views.generic import TemplateView
 
 from cart.cart_service import CartService
 from payment.forms import ShippingAddressForm
-from payment.models import ShippingAddress
+from payment.models import Order, ShippingAddress
 
 # Create your views here.
 
@@ -70,6 +70,8 @@ class CheckoutView(View):
                 shipping_address.user = request.user  # type: ignore
                 shipping_address.save()
                 messages.success(request, "Shipping address saved successfully")
+            shipping_address_text = Order.get_shipping_address(shipping_address)
+            # todo: handle the checkout payment flow
             messages.success(request, "Checkout details confirmed successfully")
             return redirect(reverse("payment-success"))
 

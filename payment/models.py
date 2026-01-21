@@ -43,6 +43,17 @@ class Order(models.Model):
     def __str__(self) -> str:
         return f"Order #{self.id} - {self.full_name} (${self.amount_paid:.2f})"
 
+    @staticmethod
+    def get_shipping_address(obj: ShippingAddress):
+        parts = [
+            obj.address1,
+            obj.address2,
+            obj.city,
+            obj.state,
+            obj.zipcode,
+        ]
+        return "\n".join([v for v in parts if v and v.strip()])
+
     class Meta:
         ordering = ["-created_at"]
 

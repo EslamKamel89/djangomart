@@ -34,9 +34,7 @@
         {% endif %}
 
         <!-- Form -->
-        <form method="POST" class="space-y-6">
-          {% csrf_token %} {% crispy form %}
-        </form>
+        <form method="POST" class="space-y-6">{% crispy form %}</form>
       </div>
     </div>
 
