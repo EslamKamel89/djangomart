@@ -57,3 +57,8 @@ class CartService:
             del cart[id]
             self.cart = cart
             print(cart)
+
+    def get_total(self):
+        return sum(
+            Decimal(str(item["price"])) * item["count"] for item in self.cart.values()
+        )

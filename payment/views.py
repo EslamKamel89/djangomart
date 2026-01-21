@@ -9,6 +9,7 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from cart.cart_service import CartService
+from cart.types import Cart
 from payment.forms import ShippingAddressForm
 from payment.models import Order, ShippingAddress
 
@@ -23,40 +24,37 @@ class CheckoutView(View):
             shipping_address = ShippingAddress.objects.filter(user=request.user).first()
         return shipping_address
 
-    def is_cart_empty(self, request: HttpRequest):
-        cart = CartService(request).cart
+    def is_cart_empty(self, cart: Cart):
         return len(cart) == 0
 
-    def get_cart_total(self, request: HttpRequest):
-        cart = CartService(request).cart
-        return sum(
-            Decimal(str(item["price"])) * item["count"] for item in cart.values()
-        )
-
     def get(self, request: HttpRequest):
-        if self.is_cart_empty(request):
+        cart_service = CartService(request)
+        cart = cart_service.cart
+        if self.is_cart_empty(cart):
             messages.error(request, "Your cart is empty")
             return redirect("/")
         shipping_address = self.get_shipping_address(request)
         form = ShippingAddressForm(
             btn_label="Complete Order", instance=shipping_address
         )
-        cart_total = self.get_cart_total(request)
+        cart_total = cart_service.get_total()
         return render(
             request, "payment/checkout.html", {"form": form, "cart_total": cart_total}
         )
 
     def post(self, request: HttpRequest):
-        if self.is_cart_empty(request):
+        cart_service = CartService(request)
+        cart = cart_service.cart
+        if self.is_cart_empty(cart):
             messages.error(request, "Your cart is empty")
             return redirect("/")
         shipping_address = self.get_shipping_address(request)
+        cart_total = cart_service.get_total()
         form = ShippingAddressForm(
             btn_label="Complete Order", instance=shipping_address, data=request.POST
         )
         if not form.is_valid():
             messages.error(request, "Please fix the validation errors")
-            cart_total = self.get_cart_total(request)
             return render(
                 request,
                 "payment/checkout.html",
@@ -71,7 +69,6 @@ class CheckoutView(View):
                 shipping_address.save()
                 messages.success(request, "Shipping address saved successfully")
             shipping_address_text = Order.get_shipping_address(shipping_address)
-            cart = CartService(request).cart
             # todo: handle the checkout payment flow
             messages.success(request, "Checkout details confirmed successfully")
             return redirect(reverse("payment-success"))
