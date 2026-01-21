@@ -3,6 +3,7 @@ from typing import Any
 
 from django.http import HttpRequest
 
+from cart.types import Cart
 from store.models import Product
 
 
@@ -15,11 +16,11 @@ class CartService:
             self.session.modified = True
 
     @property
-    def cart(self) -> dict[str, Any]:
+    def cart(self) -> Cart:
         return self.session.get("cart", {})
 
     @cart.setter
-    def cart(self, new_cart: dict[str, Any]):
+    def cart(self, new_cart: Cart):
         self.session["cart"] = new_cart
         self.session.modified = True
 
@@ -32,7 +33,7 @@ class CartService:
             product.brand,
             product.category.name if product.category else None,
         )
-        cart = self.cart.copy()
+        cart: Cart = self.cart.copy()
         if id in cart:
             if increment:
                 cart[id]["count"] += count
@@ -51,7 +52,7 @@ class CartService:
 
     def delete(self, product_id: int):
         id = str(product_id)
-        cart = self.cart.copy()
+        cart: Cart = self.cart.copy()
         if id in cart:
             del cart[id]
             self.cart = cart

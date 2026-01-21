@@ -71,6 +71,7 @@ class CheckoutView(View):
                 shipping_address.save()
                 messages.success(request, "Shipping address saved successfully")
             shipping_address_text = Order.get_shipping_address(shipping_address)
+            cart = CartService(request).cart
             # todo: handle the checkout payment flow
             messages.success(request, "Checkout details confirmed successfully")
             return redirect(reverse("payment-success"))
