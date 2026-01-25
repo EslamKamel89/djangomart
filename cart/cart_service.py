@@ -56,7 +56,6 @@ class CartService:
         if id in cart:
             del cart[id]
             self.cart = cart
-            print(cart)
 
     def get_total(self) -> Decimal:
         return Decimal(
@@ -65,3 +64,6 @@ class CartService:
                 for item in self.cart.values()
             )
         )
+
+    def clear_cart(self):
+        self.cart = {}

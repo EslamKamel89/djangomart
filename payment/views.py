@@ -104,6 +104,7 @@ class CheckoutView(View):
             order, items = self.save_order(
                 user, cart, form.cleaned_data, shipping_address_text, cart_total
             )
+            cart_service.clear_cart()
             # todo: handle the checkout payment flow
             messages.success(request, "Checkout details confirmed successfully")
             return redirect(reverse("payment-success"))
