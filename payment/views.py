@@ -104,15 +104,18 @@ class CheckoutView(View):
             order, items = self.save_order(
                 user, cart, form.cleaned_data, shipping_address_text, cart_total
             )
-            cart_service.clear_cart()
             # todo: handle the checkout payment flow
             messages.success(request, "Checkout details confirmed successfully")
             return redirect(reverse("payment-success"))
 
 
-class PaymentSuccess(TemplateView):
-    template_name = "payment/payment-success.html"
+class PaymentSuccess(View):
+    def get(self, request: HttpRequest):
+        cart_service = CartService(request)
+        cart_service.clear_cart()
+        return render(request, "payment/payment-success.html")
 
 
 class PaymentFailure(TemplateView):
-    template_name = "payment/payment-failure.html"
+    def get(self, request: HttpRequest):
+        return render(request, "payment/payment-failure.html")
