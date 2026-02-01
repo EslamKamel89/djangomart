@@ -1,15 +1,14 @@
 import os
+from typing import cast
 
 from stripe import StripeClient
+
+from payment.types import PaymentIntentMetadata
 
 
 class StripeService:
     _client: StripeClient | None = None
-
-    currency: str
-
-    def __init__(self) -> None:
-        self.currency = os.getenv("CURRENCY", "USD")
+    _currency: str | None = None
 
     @classmethod
     def get_client(cls) -> StripeClient:
@@ -22,11 +21,18 @@ class StripeService:
         return cls._client
 
     @classmethod
+    def get_currency(cls):
+        if cls._currency is not None:
+            return cls._currency
+        cls._currency = os.getenv("CURRENCY", "USD")
+        return cls._currency
+
+    @classmethod
     def create_payment_intent(
         cls,
         *,
         amount: int,
-        metadata: dict[str, str] | None,
+        metadata: PaymentIntentMetadata | None = None,
     ):
         """
         Create a Stripe PaymentIntent.
@@ -34,7 +40,15 @@ class StripeService:
         This represents an attempt to move money.
         Does NOT confirm or capture payment.
         """
-        pass
+        client = cls.get_client()
+        payment_intent = client.v1.payment_intents.create(
+            params={
+                "amount": amount,
+                "currency": cls.get_currency().lower(),
+                "metadata": cast(dict[str, str], metadata or {}),
+            }
+        )
+        return payment_intent
 
     @classmethod
     def retrieve_payment_intent(
