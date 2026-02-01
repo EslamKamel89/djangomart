@@ -16,6 +16,7 @@ from cart.cart_service import CartService
 from cart.types import Cart
 from payment.forms import ShippingAddressForm
 from payment.models import Order, OrderItem, ShippingAddress
+from payment.stripe import StripeService
 
 # Create your views here.
 
@@ -60,7 +61,14 @@ class CheckoutView(View):
 
     def handle_stripe_payment(self, order: Order):
         amount_in_cents = int(order.amount_paid * 100)
-        # stripe.PaymentIntent.create()
+        payment_intent = StripeService.create_payment_intent(
+            amount=amount_in_cents,
+            metadata={
+                "order_id": str(order.id),
+                "user_id": str(order.user.id) if order.user else "guest",  # type: ignore
+            },
+        )
+        return payment_intent
 
     def get(self, request: HttpRequest):
         cart_service = CartService(request)
@@ -109,7 +117,7 @@ class CheckoutView(View):
             order, items = self.save_order(
                 user, cart, form.cleaned_data, shipping_address_text, cart_total
             )
-            # todo: handle the checkout payment flow
+            self.handle_stripe_payment(order)
             messages.success(request, "Checkout details confirmed successfully")
             return redirect(reverse("payment-success"))
 
