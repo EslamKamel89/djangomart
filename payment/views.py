@@ -2,6 +2,7 @@ from decimal import Decimal
 from http.client import HTTPException
 from typing import Any
 
+import stripe
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -56,6 +57,10 @@ class CheckoutView(View):
                 )
                 items.append(item)
         return (order, items)
+
+    def handle_stripe_payment(self, order: Order):
+        amount_in_cents = int(order.amount_paid * 100)
+        # stripe.PaymentIntent.create()
 
     def get(self, request: HttpRequest):
         cart_service = CartService(request)
