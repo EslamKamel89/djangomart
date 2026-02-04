@@ -2,7 +2,6 @@ from decimal import Decimal
 from http.client import HTTPException
 from typing import Any
 
-import stripe
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -60,15 +59,19 @@ class CheckoutView(View):
         return (order, items)
 
     def handle_stripe_payment(self, order: Order):
-        amount_in_cents = int(order.amount_paid * 100)
-        payment_intent = StripeService.create_payment_intent(
-            amount=amount_in_cents,
+        checkout_session = StripeService.create_checkout_session(
+            price_in_cents=int(order.amount_paid * 100),
+            success_url=self.request.build_absolute_uri(reverse("payment-success")),
+            cancel_url=self.request.build_absolute_uri(reverse("payment-failure")),
             metadata={
                 "order_id": str(order.id),
                 "user_id": str(order.user.id) if order.user else "guest",  # type: ignore
             },
         )
-        return payment_intent
+        url = checkout_session.url
+        if url is None:
+            return redirect(reverse("payment-failure"))
+        return redirect(url)
 
     def get(self, request: HttpRequest):
         cart_service = CartService(request)
@@ -117,9 +120,7 @@ class CheckoutView(View):
             order, items = self.save_order(
                 user, cart, form.cleaned_data, shipping_address_text, cart_total
             )
-            self.handle_stripe_payment(order)
-            messages.success(request, "Checkout details confirmed successfully")
-            return redirect(reverse("payment-success"))
+            return self.handle_stripe_payment(order)
 
 
 class PaymentSuccess(View):
