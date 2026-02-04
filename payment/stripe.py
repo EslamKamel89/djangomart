@@ -32,7 +32,7 @@ class StripeService:
         cls,
         *,
         amount: int,
-        metadata: PaymentIntentMetadata | None = None,
+        metadata: PaymentIntentMetadata,
     ):
         """
         Create a Stripe PaymentIntent.
@@ -45,8 +45,9 @@ class StripeService:
             params={
                 "amount": amount,
                 "currency": cls.get_currency().lower(),
-                "metadata": cast(dict[str, str], metadata or {}),
-            }
+                "metadata": cast(dict[str, str], metadata),
+            },
+            options={"idempotency_key": f"payment_intent:order:{metadata['order_id']}"},
         )
         return payment_intent
 
