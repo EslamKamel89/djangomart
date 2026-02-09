@@ -1,7 +1,7 @@
 import os
 from typing import Any, TypedDict, cast
 
-from stripe import StripeClient
+from stripe import StripeClient, Webhook
 from stripe.checkout import Session
 
 
@@ -18,11 +18,6 @@ class CheckoutMetadata(TypedDict):
 class StripeService:
     """
     Stripe integration boundary for DjangoMart.
-
-    Architectural rules enforced by this service:
-    - Stripe Checkout owns PaymentIntent creation
-    - Django never creates PaymentIntents manually
-    - Django relies on metadata + webhooks for reconciliation
     """
 
     _client: StripeClient | None = None
@@ -118,12 +113,20 @@ class StripeService:
         *,
         payload: bytes,
         sig_header: str,
-        webhook_secret: str,
+        webhook_secret: str | None,
     ):
         """
         Verify and construct a Stripe webhook event.
 
         Webhooks are the ONLY authoritative source of payment truth.
         Redirects, sessions, and client signals must never be trusted.
+        sig_header: Comes from HTTP header: Stripe-Signature
         """
-        pass
+        if not webhook_secret:
+            raise RuntimeError("STRIPE_WEBHOOK_SECRET is not configured")
+        event = Webhook.construct_event(
+            payload=payload,
+            sig_header=sig_header,
+            secret=webhook_secret,
+        )
+        return event
