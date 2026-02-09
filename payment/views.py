@@ -5,7 +5,7 @@ from typing import Any
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.http import HttpRequest
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
