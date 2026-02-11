@@ -40,6 +40,15 @@ class Order(models.Model):
         User, on_delete=models.SET_NULL, blank=True, null=True, related_name="orders"
     )
 
+    class OrderStatus(models.TextChoices):
+        paid = "paid", "Paid"
+        failed = "failed", "Failed"
+        pending = "pending", "Pending"
+
+    status = models.TextField(
+        max_length=20, choices=OrderStatus.choices, default=OrderStatus.pending
+    )
+
     def __str__(self) -> str:
         return f"Order #{self.id} - {self.full_name} (${self.amount_paid:.2f})"
 

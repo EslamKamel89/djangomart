@@ -20,11 +20,20 @@ class StripeWebHookView(View):
             event = StripeService.verify_webhook_event(
                 payload=payload,
                 sig_header=sig_header,
-                webhook_secret=os.environ.get("STRIPE_WEBHOOK_SECRET"),
+                webhook_secret=webhook_secret,
             )
             print("Webhook received and signature is correct")
-            print(event)
-            print(event.data)
+            event_type = event.type
+            print(f"StripeWebHookView.post webhook event is received: {event_type}")
+            match event_type:
+                case "payment_intent.succeeded":
+                    StripeService.handle_payment_succeeded(event)
+                case "payment_intent.payment_failed":
+                    StripeService.handle_payment_failed(event)
+                case _:
+                    print(f"Ignored Stripe event type: {event_type}")
+                    pass
+
         except RuntimeError as e:
             print(f"StripeWebHookView.post RuntimeError: {e}")
             # Server misconfigured (missing secret)
