@@ -2,6 +2,7 @@ import os
 from typing import Any, Optional, TypedDict, cast
 
 from django.contrib.auth.models import User
+from django.db import transaction
 from stripe import Event, StripeClient, Webhook
 from stripe.checkout import Session
 
@@ -174,23 +175,25 @@ class StripeService:
         user, order = cls.get_order_and_user_from_event(event)
         if not order:
             return
-        if order.status != Order.OrderStatus.pending:
-            return
-        order = Order.objects.select_for_update().filter(id=order.id).first()
-        if not order:
-            return
-        order.status = Order.OrderStatus.paid
-        order.save(update_fields=["status"])
+        with transaction.atomic():
+            order = Order.objects.select_for_update().filter(id=order.id).first()
+            if not order:
+                return
+            if order.status != Order.OrderStatus.pending:
+                return
+            order.status = Order.OrderStatus.paid
+            order.save(update_fields=["status"])
 
     @classmethod
     def handle_payment_failed(cls, event: Event):
         user, order = cls.get_order_and_user_from_event(event)
         if not order:
             return
-        if order.status != Order.OrderStatus.pending:
-            return
-        order = Order.objects.select_for_update().filter(id=order.id).first()
-        if not order:
-            return
-        order.status = Order.OrderStatus.failed
-        order.save(update_fields=["status"])
+        with transaction.atomic():
+            order = Order.objects.select_for_update().filter(id=order.id).first()
+            if not order:
+                return
+            if order.status != Order.OrderStatus.pending:
+                return
+            order.status = Order.OrderStatus.failed
+            order.save(update_fields=["status"])
