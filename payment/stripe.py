@@ -1,12 +1,14 @@
 import os
+from datetime import datetime
 from typing import Any, Optional, TypedDict, cast
 
 from django.contrib.auth.models import User
-from django.db import transaction
+from django.db import IntegrityError
+from django.utils import timezone
 from stripe import Event, StripeClient, Webhook
 from stripe.checkout import Session
 
-from payment.models import Order
+from payment.models import Order, StripeWebhookEvent
 
 
 class CheckoutMetadata(TypedDict):
@@ -103,6 +105,7 @@ class StripeService:
                 "success_url": success_url,
                 "cancel_url": cancel_url,
                 "metadata": cast(dict, metadata),
+                "payment_intent_data": {"metadata": cast(dict, metadata)},
             }
         )
         return session
@@ -171,29 +174,45 @@ class StripeService:
         return (user, order)
 
     @classmethod
+    def create_webhook_event_model(cls, event: Event) -> StripeWebhookEvent | None:
+        try:
+            user, order = cls.get_order_and_user_from_event(event)
+            return StripeWebhookEvent.objects.create(
+                event_id=event.id,
+                stripe_event_type=event.type,
+                stripe_metadata=event.data.object.get("metadata", {}),
+                payload_snapshot=event.to_dict(),
+                stripe_created_at=timezone.make_aware(
+                    datetime.fromtimestamp(event.created)
+                ),
+                order=order,
+            )
+        except IntegrityError:
+            # Event already processed (unique constraint hit)
+            return None
+
+    @classmethod
     def handle_payment_succeeded(cls, event: Event):
         user, order = cls.get_order_and_user_from_event(event)
         if not order:
             return
-        with transaction.atomic():
-            order = Order.objects.select_for_update().filter(id=order.id).first()
-            if not order:
-                return
-            if order.status != Order.OrderStatus.pending:
-                return
-            order.status = Order.OrderStatus.paid
-            order.save(update_fields=["status"])
+        order = Order.objects.select_for_update().filter(id=order.id).first()
+        if not order:
+            return
+        if order.status != Order.OrderStatus.pending:
+            return
+        order.status = Order.OrderStatus.paid
+        order.save(update_fields=["status"])
 
     @classmethod
     def handle_payment_failed(cls, event: Event):
         user, order = cls.get_order_and_user_from_event(event)
         if not order:
             return
-        with transaction.atomic():
-            order = Order.objects.select_for_update().filter(id=order.id).first()
-            if not order:
-                return
-            if order.status != Order.OrderStatus.pending:
-                return
-            order.status = Order.OrderStatus.failed
-            order.save(update_fields=["status"])
+        order = Order.objects.select_for_update().filter(id=order.id).first()
+        if not order:
+            return
+        if order.status != Order.OrderStatus.pending:
+            return
+        order.status = Order.OrderStatus.failed
+        order.save(update_fields=["status"])

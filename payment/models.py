@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
 
 from django.contrib.auth.models import User
-from django.db import models
+from django.db import IntegrityError, models, transaction
+from django.utils import timezone
 
 import store.models as store_models
 
@@ -89,3 +90,29 @@ class OrderItem(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+
+
+class StripeWebhookEvent(models.Model):
+    event_id = models.CharField(max_length=255, unique=True, db_index=True)
+    stripe_event_type = models.CharField(max_length=255)
+    processed_at = models.DateTimeField(auto_now_add=True)
+    order = models.ForeignKey(
+        Order, related_name="events", null=True, on_delete=models.SET_NULL
+    )
+    stripe_metadata = models.JSONField(
+        default=dict,
+        help_text="Metadata received from Stripe in this event",
+    )
+    payload_snapshot = models.JSONField(
+        help_text="Full Stripe event payload as received"
+    )
+    processed_successfully = models.BooleanField(default=False)
+    stripe_created_at = models.DateTimeField(
+        help_text="Timestamp when Stripe created the event"
+    )
+
+    def __str__(self) -> str:
+        return f"{self.stripe_event_type} ({self.event_id})"
+
+    class Meta:
+        ordering = ("-processed_at",)
